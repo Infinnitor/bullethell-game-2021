@@ -51,6 +51,7 @@ class game_info():
         self.shake = False
 
         self.particles = []
+        self.sprites = []
 
     class colour_list():
         def __init__(c):
@@ -193,6 +194,12 @@ class game_info():
 
         pygame.mixer.Channel(s[1]).play(s[0])
 
+    def add_sprite(self, new_sprite):
+        self.sprites.append(new_sprite)
+
+    def purge_sprites(self):
+        self.sprites = []
+
     def init_particles(self, number, origin, colour, angle, speed, radius, randcolour=False, randspeed=True, lifetime=100, sprite=None):
         for new_part in range(number):
             c = colour
@@ -324,6 +331,13 @@ class game_info():
         self.mouse_pos = (m[0] * w_ratio, m[1] * h_ratio)
 
     def update_draw(self):
+
+        for s_move in self.sprites:
+            s_move.update_move(self)
+
+        for s_draw in self.sprites:
+            s_draw.update_draw(self)
+
         self.update_screenshake()
         self.update_particles()
 
