@@ -21,17 +21,25 @@ class player_class(sprite):
         self.y = pos[1]
         self.r = radius
 
+        self.speed = speed
         self.default_speed = speed
-        self.speed = self.default_speed
+        self.focus_speed = self.default_speed // 2
 
         self.sprite = sprite
 
     def update_move(self, game):
 
+        print(self.speed)
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
-            self.speed = self.default_speed // 2
+            if self.speed > self.focus_speed:
+                self.speed -= 0.1
+            else:
+                self.speed = self.focus_speed
         else:
-            self.speed = self.default_speed
+            if self.speed < self.default_speed:
+                self.speed += 0.1
+            else:
+                self.speed = self.default_speed
 
         if game.check_key(pygame.K_LEFT, pygame.K_a):
             self.x -= self.speed
@@ -71,7 +79,7 @@ game = game_info(
                 user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
-                show_framerate=True,
+                show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
 main_game(game)
