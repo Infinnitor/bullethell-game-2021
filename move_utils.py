@@ -31,3 +31,23 @@ class offset_point():
         self.update_pos()
 
         return [self.x, self.y]
+
+
+class sine_bob():
+    def __init__(self, wavelength, period):
+        self.w = wavelength
+        self.p = period
+
+        self.x = 0
+        self.y_mod = 0
+
+    def update_pos(self):
+        self.x += 0.01
+        self.y_mod = self.w * math.sin(self.x * self.p)
+
+    def get_pos(self, update=True):
+        if update:
+            self.update_pos()
+            return self.y_mod
+        else:
+            return 0
