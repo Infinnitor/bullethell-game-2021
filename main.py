@@ -1,22 +1,11 @@
 from gameinfo import game_info, pygame, time, math, random
-
-
-# Sprite skeleton class
-class sprite():
-
-    def update_move(self):
-        pass
-
-    def update_draw(self):
-        pass
-
-    def kill(self):
-        self.destroy = True
+import move_utils as u
+from skeleton_class import sprite
 
 
 # Player class
 class player_class(sprite):
-    def __init__(self, pos, radius, speed, sprite):
+    def __init__(self, pos, radius, speed, sprites):
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius
@@ -25,11 +14,10 @@ class player_class(sprite):
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
 
-        self.sprite = sprite
+        self.sprites = sprites
 
     def update_move(self, game):
 
-        print(self.speed)
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             if self.speed > self.focus_speed:
                 self.speed -= 0.1
@@ -41,6 +29,9 @@ class player_class(sprite):
             else:
                 self.speed = self.default_speed
 
+        oldx = self.x
+        oldy = self.y
+
         if game.check_key(pygame.K_LEFT, pygame.K_a):
             self.x -= self.speed
         if game.check_key(pygame.K_RIGHT, pygame.K_d):
@@ -50,14 +41,41 @@ class player_class(sprite):
         if game.check_key(pygame.K_DOWN, pygame.K_s):
             self.y += self.speed
 
+        if not self.onscreen(game):
+            self.x = oldx
+            self.y = oldy
+
+        if game.check_key(pygame.K_SPACE, timebuffer=5):
+            game.add_sprite(player_bullet(pos=(self.x, self.y), radius=self.r//2, speed=10, sprites=None))
+
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
+
+
+class player_bullet(sprite):
+    def __init__(self, pos, radius, speed, sprites):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.speed = speed
+
+        self.sprites = sprites
+
+    def update_move(self, game):
+        if self.onscreen(game):
+            self.y -= self.speed
+        else:
+            self.destroy = True
+
+    def update_draw(self, game):
+        pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
 
 
 def main_game(game):
 
     player_origin = game.orientate("Center", "Bottom-Center")
-    player = player_class(pos=player_origin, radius=15, speed=4, sprite=None)
+    player = player_class(pos=player_origin, radius=15, speed=4, sprites=None)
     game.add_sprite(player)
 
     while game.run:

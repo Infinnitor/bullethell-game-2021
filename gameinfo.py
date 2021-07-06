@@ -196,6 +196,7 @@ class game_info():
 
     def add_sprite(self, new_sprite):
         self.sprites.append(new_sprite)
+        new_sprite.add_default_attr()
 
     def purge_sprites(self):
         self.sprites = []
@@ -332,11 +333,25 @@ class game_info():
 
     def update_draw(self):
 
+        print(len(self.sprites))
+
+        valid_sprites = []
         for s_move in self.sprites:
             s_move.update_move(self)
 
+            if not s_move.destroy:
+                valid_sprites.append(s_move)
+
+        self.sprites = valid_sprites
+
+        valid_sprites = []
         for s_draw in self.sprites:
             s_draw.update_draw(self)
+
+            if not s_draw.destroy:
+                valid_sprites.append(s_draw)
+
+        self.sprites = valid_sprites
 
         self.update_screenshake()
         self.update_particles()
