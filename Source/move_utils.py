@@ -13,6 +13,34 @@ def circle_collide(p, q, attr=True):
         return False
 
 
+def rect_collide(a, b, attr=True):
+
+    if attr:
+        a = (a.x, a.y, a.width, a.height)
+        b = (b.x, b.y, b.width, b.height)
+
+    def within_x(x, r):
+        if x > r[0] and x < r[1]:
+            return True
+        return False
+
+    def within_y(y, r):
+        if y > r[0] and y < r[1]:
+            return True
+        return False
+
+    b_x = (b[0], b[2])
+    b_y = (b[1], b[3])
+
+    if within_x(a[0], b_x) and within_y(a[1], b_y):
+        return True
+
+    if within_x(a[2], b_x) and within_x(a[3], b_y):
+        return True
+
+    return False
+
+
 class offset_point():
     def __init__(self, parent, offset):
 
