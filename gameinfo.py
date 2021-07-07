@@ -333,8 +333,6 @@ class game_info():
 
     def update_draw(self):
 
-        print(len(self.sprites))
-
         valid_sprites = []
         for s_move in self.sprites:
             s_move.update_move(self)
