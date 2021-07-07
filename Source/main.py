@@ -41,11 +41,13 @@ class player_class(sprite):
         if game.check_key(pygame.K_DOWN, pygame.K_s):
             self.y += self.speed
 
-        if not self.onscreen(game):
+        onscreen_status = self.onscreen_info(game)
+        if onscreen_status == "X":
             self.x = oldx
+        elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, timebuffer=5):
+        if game.check_key(pygame.K_SPACE, timebuffer=15):
             game.add_sprite(player_bullet(pos=(self.x, self.y), radius=self.r//2, speed=10, sprites=None))
 
     def update_draw(self, game):

@@ -23,3 +23,11 @@ class sprite():
             return False
 
         return True
+
+    def onscreen_info(self, game):
+        if self.x < 0 or self.x > game.win_w:
+            return "X"
+        if self.y < 0 or self.y > game.win_h:
+            return "Y"
+
+        return ""
