@@ -14,6 +14,8 @@ class player_class(sprite):
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
 
+        self.offset = u.offset_point(self, (0, self.r * -1))
+
         self.sprites = sprites
 
     def update_move(self, game):
@@ -47,12 +49,15 @@ class player_class(sprite):
         elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, timebuffer=15):
-            game.add_sprite(player_bullet(pos=(self.x, self.y), radius=self.r//2, speed=10, sprites=None))
+        if game.check_key(pygame.K_SPACE, timebuffer=7):
+            game.add_sprite(player_bullet(
+                                    pos=self.offset.get_pos(),
+                                    radius=self.r//2,
+                                    speed=10,
+                                    sprites=None))
 
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
-
 
 class player_bullet(sprite):
     def __init__(self, pos, radius, speed, sprites):
