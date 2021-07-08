@@ -1,4 +1,5 @@
-from pygame import transform.rotate
+from pygame import transform
+
 
 # Sprite skeleton class
 class sprite():
