@@ -1,11 +1,13 @@
 from gameinfo import game_info, pygame, time, math, random
 import move_utils as u
-from skeleton_class import sprite
+from sprite_class import sprite
 
 
 # Player class
 class player_class(sprite):
     def __init__(self, pos, radius, speed, sprites):
+        self.name = "PLAYER"
+
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius
@@ -14,7 +16,7 @@ class player_class(sprite):
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
 
-        self.bullet_offset = u.offset_point(self, (0, self.r * -1)))
+        self.bullet_offset = u.offset_point(self, (0, self.r * -1))
 
         self.sprites = sprites
 
@@ -43,6 +45,9 @@ class player_class(sprite):
         if game.check_key(pygame.K_DOWN, pygame.K_s):
             self.y += self.speed
 
+        if game.check_key(pygame.K_q, buffer=True):
+            print(random.choice(game.sprites))
+
         onscreen_status = self.onscreen_info(game)
         if onscreen_status == "X":
             self.x = oldx
@@ -59,6 +64,10 @@ class player_class(sprite):
 
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
+        self.update_highlight(game)
+
+    def draw_highlight(self, game):
+        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
 
 class bullet(sprite):
     def __init__(self, pos, radius, speed, angle, sprites, target=None):
@@ -94,7 +103,10 @@ class bullet(sprite):
 
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
+        self.update_highlight(game)
 
+    def draw_highlight(self, game):
+        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
 
 def main_game(game):
 
