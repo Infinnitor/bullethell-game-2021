@@ -41,7 +41,13 @@ def rect_collide(a, b, attr=True):
     return False
 
 
-class offset_point():
+class offset():
+    def update_pos(self):
+        self.x = self.parent.x + self.offset_x
+        self.y = self.parent.y + self.offset_y
+
+
+class offset_point(offset):
     def __init__(self, parent, offset):
 
         self.parent = parent
@@ -51,9 +57,22 @@ class offset_point():
 
         self.update_pos()
 
-    def update_pos(self):
-        self.x = self.parent.x + self.offset_x
-        self.y = self.parent.y + self.offset_y
+    def get_pos(self):
+        self.update_pos()
+
+        return [self.x, self.y]
+
+
+class offset_circle(offset):
+    def __init__(self, parent, offset, radius):
+
+        self.parent = parent
+
+        self.offset_x = offset[0]
+        self.offset_y = offset[1]
+
+        self.update_pos()
+        self.r = radius
 
     def get_pos(self):
         self.update_pos()
