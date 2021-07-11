@@ -55,7 +55,7 @@ class player_class(sprite):
             self.y = oldy
 
         if game.check_key(pygame.K_SPACE, timebuffer=7):
-            game.add_sprite(bullet(
+            game.add_sprite(standard_bullet(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r//2,
                                     speed=10,
@@ -63,13 +63,15 @@ class player_class(sprite):
                                     sprites=None))
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
+        a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
+
+        game.win.blit(self.sprites, a_dest)
+
+        #pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
         self.update_highlight(game)
 
-    def draw_highlight(self, game):
-        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
 
-class bullet(sprite):
+class standard_bullet(sprite):
     def __init__(self, pos, radius, speed, angle, sprites, target=None):
         self.x = pos[0]
         self.y = pos[1]
@@ -108,10 +110,59 @@ class bullet(sprite):
     def draw_highlight(self, game):
         pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
 
+
+class tracking_bullet(sprite):
+    def __init__(self, pos, radius, speed, sprites, target=None, target_delay=0):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.speed = speed
+
+        a = math.radians(self.angle)
+        self.xmove = math.cos(a)
+        self.ymove = math.sin(a)
+
+        self.target = target
+        self.target_delay = target_delay
+
+        self.sprites = sprites
+
+    def update_move(self, game):
+        if self.onscreen(game):
+            self.x += self.xmove * self.speed
+            self.y += self.ymove * self.speed
+        else:
+            self.destroy = True
+
+        a = -90
+        if game.frames & self.target_delay == 0:
+            if self.target is not None:
+                a = math.atan2(self.target.x - self.x, self.target.y - self.y)
+
+        self.xmove = math.cos(a)
+        self.ymove = math.sin(a)
+
+        if u.circle_collide(self, self.target):
+            self.destroy = True
+
+    def update_draw(self, game):
+        pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
+        self.update_highlight(game)
+
+    def draw_highlight(self, game):
+        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
+
+
 def main_game(game):
 
     player_origin = game.orientate("Center", "Bottom-Center")
-    player = player_class(pos=player_origin, radius=15, speed=4, sprites=None)
+    player = player_class(
+                        pos=player_origin,
+                        radius=15,
+                        speed=4,
+                        sprites=pygame.image.load('data/sprites/player/PlayerDefault.png'))
+
     game.add_sprite(player)
 
     while game.run:

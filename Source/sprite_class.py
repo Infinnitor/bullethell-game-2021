@@ -1,4 +1,4 @@
-from pygame import transform
+from pygame import transform, draw
 
 
 # Sprite skeleton class
@@ -21,6 +21,9 @@ class sprite():
         if self.highlight > 0:
             self.draw_highlight(game)
             self.highlight -= 1
+
+    def draw_highlight(self, game):
+        draw.rect(game.win, game.colours.green, (self.x, self.y, 20, 20))
 
     def add_default_attr(self):
         try:
@@ -49,6 +52,14 @@ class sprite():
             return "Y"
 
         return ""
+
+    def center_image_pos(self, sprite, pos):
+        i = sprite.get_size()
+
+        x = pos[0] - (i[0] // 2)
+        y = pos[1] - (i[0] // 2)
+
+        return x, y
 
     def blit_rotate(self, image, angle, game):
         img = transform.rotate(image, angle)
