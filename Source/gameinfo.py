@@ -351,8 +351,8 @@ class game_info():
 
         self.sprites = valid_sprites
 
-        self.update_screenshake()
         self.update_particles()
+        self.update_screenshake()
 
     # Function for scaling the design screen to the target screen
     def update_scaled(self):

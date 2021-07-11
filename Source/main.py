@@ -12,6 +12,8 @@ class player_class(sprite):
         self.y = pos[1]
         self.r = radius
 
+        self.blit_angle = -90
+
         self.speed = speed
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
@@ -21,6 +23,8 @@ class player_class(sprite):
         self.sprites = sprites
 
     def update_move(self, game):
+
+        self.blit_angle += -1
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             if self.speed > self.focus_speed:
@@ -63,11 +67,9 @@ class player_class(sprite):
                                     sprites=None))
 
     def update_draw(self, game):
-        a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
+        # a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
 
-        game.win.blit(self.sprites, a_dest)
-
-        #pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
+        self.blit_rotate(self.sprites, self.blit_angle, game)
         self.update_highlight(game)
 
 
@@ -104,7 +106,7 @@ class standard_bullet(sprite):
                 self.destroy = True
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
+        pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
         self.update_highlight(game)
 
     def draw_highlight(self, game):
@@ -161,7 +163,7 @@ def main_game(game):
                         pos=player_origin,
                         radius=15,
                         speed=4,
-                        sprites=pygame.image.load('data/sprites/player/PlayerDefault.png'))
+                        sprites=pygame.image.load('data/sprites/player/PlayerSmall.png'))
 
     game.add_sprite(player)
 
@@ -180,11 +182,11 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1280,
                 win_h=720,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=(0, 0, 0),
                 framecap=60,
-                show_framerate=False,
+                show_framerate=True,
                 quit_key=pygame.K_ESCAPE)
 
 main_game(game)
