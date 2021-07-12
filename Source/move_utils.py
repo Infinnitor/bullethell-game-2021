@@ -13,6 +13,13 @@ def circle_collide(p, q, attr=True):
         return False
 
 
+def circle_dist(p, q, attr=True):
+    if attr:
+        return math.dist((p.x, p.y), (q.x, q.y))
+    else:
+        return math.dist((p[0], p[1]), (q[0], q[1]))
+
+
 def rect_collide(a, b, attr=True):
 
     if attr:

@@ -82,7 +82,9 @@ class game_info():
             c.yellow = (155, 155, 35)
 
             c.black = (10, 10, 10)
-            c.fullblack = (0, 0, 0)
+            c.fullblack = (1, 1, 1)
+
+            c.colourkey = (0, 0, 0)
 
             c.fulllist = (
                 c.fullred,

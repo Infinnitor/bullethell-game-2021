@@ -2,6 +2,8 @@ from gameinfo import game_info, pygame, time, math, random
 
 import move_utils as u
 
+import enemies
+
 import asset_loader as asset
 from sprite_class import sprite
 
@@ -53,9 +55,6 @@ class player_class(sprite):
             self.y += self.speed
             self.moving = True
 
-        if game.check_key(pygame.K_q, buffer=True):
-            print(random.choice(game.sprites))
-
         onscreen_status = self.onscreen_info(game)
         if onscreen_status == "X":
             self.x = oldx
@@ -68,7 +67,18 @@ class player_class(sprite):
                                     radius=self.r//2,
                                     speed=10,
                                     angle=-90,
-                                    sprites=None))
+                                    sprites=None,
+                                    target="ENEMY"))
+
+        if game.check_key(pygame.K_z, timebuffer=7):
+            t = game.sprites["ENEMY"][0]
+            game.add_sprite(tracking_bullet(
+                                            pos=self.bullet_offset.get_pos(),
+                                            radius=self.r//2,
+                                            speed=10,
+                                            sprites=None,
+                                            target=t,
+                                            target_prox=100))
 
     def update_draw(self, game):
         a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
@@ -90,7 +100,7 @@ class player_class(sprite):
 
 
 class standard_bullet(sprite):
-    def __init__(self, pos, radius, speed, angle, sprites, target=None):
+    def __init__(self, pos, radius, speed, angle, sprites, target=""):
         self.name = "BULLET"
 
         self.x = pos[0]
@@ -115,13 +125,13 @@ class standard_bullet(sprite):
         else:
             self.destroy = True
 
-        if self.target is not None:
-            a = math.atan2(self.target.x - self.x, self.target.y - self.y)
-            self.xmove = math.cos(a)
-            self.ymove = math.sin(a)
+        if self.target != "":
 
-            if u.circle_collide(self, self.target):
-                self.destroy = True
+            for t in game.sprites[self.target]:
+
+                if u.circle_collide(self, t):
+                    t.flash()
+                    self.kill()
 
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
@@ -132,38 +142,49 @@ class standard_bullet(sprite):
 
 
 class tracking_bullet(sprite):
-    def __init__(self, pos, radius, speed, sprites, target=None, target_delay=0):
+    def __init__(self, pos, radius, speed, sprites, target=None, target_prox=1):
+        self.name = "BULLET"
+
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius
 
         self.speed = speed
 
-        a = math.radians(self.angle)
-        self.xmove = math.cos(a)
-        self.ymove = math.sin(a)
-
         self.target = target
-        self.target_delay = target_delay
+        self.target_prox = target_prox
+        self.target_update = True
+
+        a = -90
+        if self.target is not None:
+            a = math.atan2(self.target.y - self.y, self.target.x - self.x)
+
+            self.xmove = math.cos(a)
+            self.ymove = math.sin(a)
 
         self.sprites = sprites
 
     def update_move(self, game):
+
+        if u.circle_dist(self, self.target) < self.r + self.target.r + self.target_prox:
+            self.target_update = False
+
+        if self.target_update:
+            a = -90
+            if self.target is not None:
+                a = math.atan2(self.target.y - self.y, self.target.x - self.x)
+
+            self.xmove = math.cos(a)
+            self.ymove = math.sin(a)
+
+        if u.circle_collide(self, self.target):
+            self.target.flash()
+            self.kill()
+
         if self.onscreen(game):
             self.x += self.xmove * self.speed
             self.y += self.ymove * self.speed
         else:
-            self.destroy = True
-
-        a = -90
-        if game.frames & self.target_delay == 0:
-            if self.target is not None:
-                a = math.atan2(self.target.x - self.x, self.target.y - self.y)
-
-        self.xmove = math.cos(a)
-        self.ymove = math.sin(a)
-
-        if u.circle_collide(self, self.target):
             self.destroy = True
 
     def update_draw(self, game):
@@ -184,6 +205,8 @@ def main_game(game):
                         sprites=asset.player.default.convert())
 
     game.add_sprite(player)
+
+    game.add_sprite(enemies.enemy_class(pos=(500, 500), radius=50))
 
     while game.run:
 

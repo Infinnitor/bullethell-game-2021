@@ -6,4 +6,5 @@ class player_assets():
         self.default = image.load('data/sprites/player/PlayerSmall.png')
         self.default.set_colorkey((0, 0, 0))
 
+
 player = player_assets()
