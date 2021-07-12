@@ -1,5 +1,8 @@
 from gameinfo import game_info, pygame, time, math, random
+
 import move_utils as u
+
+import asset_loader as asset
 from sprite_class import sprite
 
 
@@ -178,7 +181,7 @@ def main_game(game):
                         pos=player_origin,
                         radius=15,
                         speed=4,
-                        sprites=pygame.image.load('data/sprites/player/PlayerSmall.png'))
+                        sprites=asset.player.default.convert())
 
     game.add_sprite(player)
 
@@ -199,7 +202,7 @@ game = game_info(
                 win_h=720,
                 user_w=1920,
                 user_h=1080,
-                bg=(0, 0, 0),
+                bg=(1, 1, 1),
                 framecap=60,
                 show_framerate=True,
                 quit_key=pygame.K_ESCAPE)
