@@ -23,7 +23,7 @@ class sprite():
             self.highlight -= 1
 
     def draw_highlight(self, game):
-        draw.circle(game.win, game.colours.green, (self.x, self.y), 2)
+        draw.circle(game.win, game.colours.green, (self.x, self.y), 10)
 
     def add_default_attr(self):
         try:

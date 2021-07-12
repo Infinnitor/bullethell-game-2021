@@ -12,8 +12,6 @@ class player_class(sprite):
         self.y = pos[1]
         self.r = radius
 
-        self.blit_angle = -90
-
         self.speed = speed
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
@@ -23,8 +21,6 @@ class player_class(sprite):
         self.sprites = sprites
 
     def update_move(self, game):
-
-        self.blit_angle += -1
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             if self.speed > self.focus_speed:
@@ -40,14 +36,19 @@ class player_class(sprite):
         oldx = self.x
         oldy = self.y
 
+        self.moving = False
         if game.check_key(pygame.K_LEFT, pygame.K_a):
             self.x -= self.speed
+            self.moving = True
         if game.check_key(pygame.K_RIGHT, pygame.K_d):
             self.x += self.speed
+            self.moving = True
         if game.check_key(pygame.K_UP, pygame.K_w):
             self.y -= self.speed
+            self.moving = True
         if game.check_key(pygame.K_DOWN, pygame.K_s):
             self.y += self.speed
+            self.moving = True
 
         if game.check_key(pygame.K_q, buffer=True):
             print(random.choice(game.sprites))
@@ -67,14 +68,28 @@ class player_class(sprite):
                                     sprites=None))
 
     def update_draw(self, game):
-        # a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
+        a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
 
-        self.blit_rotate(self.sprites, self.blit_angle, game)
+        game.win.blit(self.sprites, a_dest)
+
+        if self.moving:
+            game.init_particles(number=1,
+                                origin=(self.x, self.y),
+                                radius=15,
+                                angle="RAND",
+                                speed=0.5,
+                                randspeed=True,
+                                lifetime=10,
+                                colour=game.colours.fullcyan,
+                                layer="LOW")
+
         self.update_highlight(game)
 
 
 class standard_bullet(sprite):
     def __init__(self, pos, radius, speed, angle, sprites, target=None):
+        self.name = "BULLET"
+
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius

@@ -1,6 +1,8 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
+from sprite_class import sprite
+
 import math
 import time
 import random
@@ -51,7 +53,14 @@ class game_info():
         self.shake = False
 
         self.particles = []
-        self.sprites = []
+        self.sprites = {
+                        "LOWPARTICLE" : [],
+                        "PLAYER": [],
+                        "BULLET": [],
+                        "ENEMY" : [],
+                        "HIGHPARTICLE" : []}
+
+        print(type(self.sprites))
 
     class colour_list():
         def __init__(c):
@@ -110,7 +119,7 @@ class game_info():
 
             return random.choice(col_list)
 
-    class particle():
+    class particle(sprite):
         def __init__(part, start_x, start_y, radius, angle, speed, lifetime, colour, sprite=None):
             part.x = start_x
             part.y = start_y
@@ -134,7 +143,7 @@ class game_info():
             part.colour = colour
             part.destroy = False
 
-        def update_move(part):
+        def update_move(part, game):
             part.x += part.xmove
             part.y += part.ymove
 
@@ -195,13 +204,17 @@ class game_info():
         pygame.mixer.Channel(s[1]).play(s[0])
 
     def add_sprite(self, new_sprite):
-        self.sprites.append(new_sprite)
         new_sprite.add_default_attr()
+
+        try:
+            self.sprites[new_sprite.name].append(new_sprite)
+        except KeyError:
+            self.sprites[new_sprite.name] = [new_sprite]
 
     def purge_sprites(self):
         self.sprites = []
 
-    def init_particles(self, number, origin, colour, angle, speed, radius, randcolour=False, randspeed=True, lifetime=100, sprite=None):
+    def init_particles(self, number, origin, colour, angle, speed, radius, randcolour=False, randspeed=True, lifetime=100, sprite=None, layer="HIGH"):
         for new_part in range(number):
             c = colour
             if randcolour:
@@ -217,17 +230,22 @@ class game_info():
             if randspeed:
                 s = random.uniform(speed // 2, speed)
 
-            self.particles.append(
-                            self.particle(
-                                        start_x=origin[0],
-                                        start_y=origin[1],
-                                        radius=radius,
-                                        angle=a,
-                                        speed=s,
-                                        lifetime=lifetime,
-                                        colour=c,
-                                        sprite=sprite)
-                                        )
+            p = self.particle(
+                            start_x=origin[0],
+                            start_y=origin[1],
+                            radius=radius,
+                            angle=a,
+                            speed=s,
+                            lifetime=lifetime,
+                            colour=c,
+                            sprite=sprite)
+
+            if layer == "HIGH":
+                p.name = "HIGHPARTICLE"
+            else:
+                p.name = "LOWPARTICLE"
+
+            self.add_sprite(p)
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
         self.shake = True
@@ -333,23 +351,31 @@ class game_info():
 
     def update_draw(self):
 
-        valid_sprites = []
-        for s_move in self.sprites:
-            s_move.update_move(self)
+        def update_move_col(col):
+            valid_sprites = []
+            for s_move in self.sprites[col]:
+                s_move.update_move(self)
 
-            if not s_move.destroy:
-                valid_sprites.append(s_move)
+                if not s_move.destroy:
+                    valid_sprites.append(s_move)
 
-        self.sprites = valid_sprites
+            self.sprites[col] = valid_sprites
 
-        valid_sprites = []
-        for s_draw in self.sprites:
-            s_draw.update_draw(self)
+        def update_draw_col(col):
+            valid_sprites = []
+            for s_draw in self.sprites[col]:
+                s_draw.update_draw(self)
 
-            if not s_draw.destroy:
-                valid_sprites.append(s_draw)
+                if not s_draw.destroy:
+                    valid_sprites.append(s_draw)
 
-        self.sprites = valid_sprites
+            self.sprites[col] = valid_sprites
+
+        for c in self.sprites:
+            update_move_col(c)
+
+        for c in self.sprites:
+            update_draw_col(c)
 
         self.update_particles()
         self.update_screenshake()
