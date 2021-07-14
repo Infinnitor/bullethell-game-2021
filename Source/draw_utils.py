@@ -21,7 +21,7 @@ def randomize_rgb(colour, upper=-20, lower=20):
     return fix_rgb(final_colour)
 
 
-class particle_functions():
+class particles():
     def explosion(number, pos, speed, colour, game, lifetime=30, randcol=False, layer="HIGH"):
         for p in range(number):
 

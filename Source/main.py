@@ -1,7 +1,7 @@
 from gameinfo import game_info, pygame, time, math, random
-import draw_utils
+import draw_utils as draw_u
 
-import move_utils as u
+import move_utils as mv_u
 
 import enemies
 
@@ -22,7 +22,7 @@ class player_class(sprite):
         self.default_speed = speed
         self.focus_speed = self.default_speed // 2
 
-        self.bullet_offset = u.offset_point(self, (0, self.r * -1))
+        self.bullet_offset = mv_u.offset_point(self, (0, self.r * -1))
 
         self.sprites = sprites
 
@@ -86,20 +86,6 @@ class player_class(sprite):
 
         game.win.blit(self.sprites, a_dest)
 
-        # if self.moving:
-        #     game.init_particles(number=1,
-        #                         origin=(self.x, self.y),
-        #                         radius=15,
-        #                         angle="RAND",
-        #                         speed=0.5,
-        #                         randspeed=True,
-        #                         lifetime=10,
-        #                         colour=game.colours.fullcyan,
-        #                         layer="LOW")
-
-        if self.moving:
-
-            draw_utils.particle_functions.explosion(number=15, pos=(self.x, self.y), speed=0, colour=game.colours.fullcyan, game=game, randcol=True, lifetime=10, layer="LOW")
         self.update_highlight(game)
 
 
@@ -133,7 +119,7 @@ class standard_bullet(sprite):
 
             for t in game.sprites[self.target]:
 
-                if u.circle_collide(self, t):
+                if mv_u.circle_collide(self, t):
                     t.flash()
                     self.kill()
 
@@ -170,7 +156,7 @@ class tracking_bullet(sprite):
 
     def update_move(self, game):
 
-        if u.circle_dist(self, self.target) < self.r + self.target.r + self.target_prox:
+        if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
             self.target_update = False
 
         if self.target_update:
@@ -181,7 +167,7 @@ class tracking_bullet(sprite):
             self.xmove = math.cos(a)
             self.ymove = math.sin(a)
 
-        if u.circle_collide(self, self.target):
+        if mv_u.circle_collide(self, self.target):
             self.target.flash()
             self.kill()
 
