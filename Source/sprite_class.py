@@ -1,4 +1,5 @@
 from pygame import transform, draw
+from colour_manager import colours
 
 
 # Sprite skeleton class
@@ -28,7 +29,7 @@ class sprite():
         except AttributeError:
             highlight_r = 10
 
-        draw.circle(game.win, game.colours.green, (self.x, self.y), highlight_r)
+        draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
 
     def add_default_attr(self):
         try:

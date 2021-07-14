@@ -1,11 +1,11 @@
 from gameinfo import game_info, pygame, time, math, random
+from colour_manager import colours
 
 import draw_utils as draw_u
 import move_utils as mv_u
 
 import enemies
 
-import asset_loader as asset
 from sprite_class import sprite
 
 
@@ -22,21 +22,25 @@ class player_class(sprite):
         self.mysurface = pygame.Surface((self.side, self.side))
 
         self.speed = speed
-        self.c = game.colours.green
+        self.default_speed = speed
+        self.focus_speed = speed / 2
+
+        self.c = colours.fullblack
 
         self.bullet_offset = mv_u.offset_point(self, (0, self.r * -1))
 
     def update_move(self, game):
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
-            self.c = game.colours.fullgreen
+            self.speed = self.focus_speed
 
-            if self.side > self.r:
+            if self.side > self.r * 1.5:
                 self.side -= 1
             else:
-                self.side = self.r
+                self.side = self.r * 1.5
         else:
-            self.c = game.colours.green
+            self.speed = self.default_speed
+
             if self.side < self.r * 2:
                 self.side += 1
             else:
@@ -94,9 +98,10 @@ class player_class(sprite):
             self.side,
             self.side)
 
-        #pygame.draw.rect(self.mysurface, game.colours.green, surf_rect)
-
-        draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.side//4)
+        if self.side < self.r * 2:
+            draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.side//4)
+        else:
+            pygame.draw.rect(self.mysurface, self.c, surf_rect)
 
         game.win.blit(self.mysurface, (self.x - self.r, self.y - self.r))
         pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
@@ -139,7 +144,7 @@ class standard_bullet(sprite):
                     self.kill()
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
+        pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
         self.update_highlight(game)
 
 
@@ -190,7 +195,7 @@ class tracking_bullet(sprite):
             self.destroy = True
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
+        pygame.draw.circle(game.win, colours.blue, (self.x, self.y), self.r)
         self.update_highlight(game)
 
 
@@ -200,7 +205,7 @@ def main_game(game):
     player = player_class(
                         pos=player_origin,
                         radius=20,
-                        speed=4)
+                        speed=7)
 
     game.add_sprite(player)
 
@@ -223,7 +228,7 @@ game = game_info(
                 win_h=1080,
                 user_w=1920,
                 user_h=1080,
-                bg=(1, 1, 1),
+                bg=(1, 1, 155),
                 framecap=60,
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
