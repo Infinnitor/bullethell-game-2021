@@ -122,12 +122,15 @@ class game_info():
             return random.choice(col_list)
 
     class particle(sprite):
-        def __init__(part, start_x, start_y, radius, angle, speed, lifetime, colour, sprite=None):
-            part.x = start_x
-            part.y = start_y
+        def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
+            part.x = pos[0]
+            part.y = pos[1]
             if not sprite:
-                part.r = radius
+                part.size = size
                 part.sprite_bool = False
+
+                part.shape = shape
+
             else:
                 part.sprite = sprite
                 part.sprite_bool = True
@@ -137,7 +140,7 @@ class game_info():
 
             part.lifetime = lifetime
             part.life = 0
-            part.lifeloss = radius / lifetime
+            part.lifeloss = size / lifetime
 
             part.xmove = math.cos(math.radians(part.angle)) * speed
             part.ymove = math.sin(math.radians(part.angle)) * speed
@@ -149,7 +152,7 @@ class game_info():
             part.x += part.xmove
             part.y += part.ymove
 
-            part.r -= part.lifeloss
+            part.size -= part.lifeloss
 
             part.life += 1
             if part.life > part.lifetime:
@@ -157,7 +160,14 @@ class game_info():
 
         def update_draw(part, game):
             if not part.sprite_bool:
-                pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.r)
+                if part.shape == "CIRCLE":
+                    pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.size)
+
+                elif part.shape == "SQUARE":
+                    pass
+
+                else:
+                    raise AttributeError(f"{part.shape} is not a valid shape for a particle")
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
@@ -215,39 +225,6 @@ class game_info():
 
     def purge_sprites(self):
         self.sprites = []
-
-    def init_particles(self, number, origin, colour, angle, speed, radius, randcolour=False, randspeed=True, lifetime=100, sprite=None, layer="HIGH"):
-        for new_part in range(number):
-            c = colour
-            if randcolour:
-                c = self.colours.rand(colour)
-
-            a = angle
-            if isinstance(a, list):
-                a = random.randint(a[0], a[1])
-            if angle == "RAND":
-                a = random.randint(0, 359)
-
-            s = speed
-            if randspeed:
-                s = random.uniform(speed // 2, speed)
-
-            p = self.particle(
-                            start_x=origin[0],
-                            start_y=origin[1],
-                            radius=radius,
-                            angle=a,
-                            speed=s,
-                            lifetime=lifetime,
-                            colour=c,
-                            sprite=sprite)
-
-            if layer == "HIGH":
-                p.name = "HIGHPARTICLE"
-            else:
-                p.name = "LOWPARTICLE"
-
-            self.add_sprite(p)
 
     def init_screenshake(self, magnitude, len, rand=True, spread=False):
         self.shake = True

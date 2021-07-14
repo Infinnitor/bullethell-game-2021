@@ -1,4 +1,5 @@
 from gameinfo import game_info, pygame, time, math, random
+import draw_utils
 
 import move_utils as u
 
@@ -85,17 +86,20 @@ class player_class(sprite):
 
         game.win.blit(self.sprites, a_dest)
 
-        if self.moving:
-            game.init_particles(number=1,
-                                origin=(self.x, self.y),
-                                radius=15,
-                                angle="RAND",
-                                speed=0.5,
-                                randspeed=True,
-                                lifetime=10,
-                                colour=game.colours.fullcyan,
-                                layer="LOW")
+        # if self.moving:
+        #     game.init_particles(number=1,
+        #                         origin=(self.x, self.y),
+        #                         radius=15,
+        #                         angle="RAND",
+        #                         speed=0.5,
+        #                         randspeed=True,
+        #                         lifetime=10,
+        #                         colour=game.colours.fullcyan,
+        #                         layer="LOW")
 
+        if self.moving:
+
+            draw_utils.particle_functions.explosion(number=15, pos=(self.x, self.y), speed=0, colour=game.colours.fullcyan, game=game, randcol=True, lifetime=10, layer="LOW")
         self.update_highlight(game)
 
 
