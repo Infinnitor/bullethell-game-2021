@@ -60,8 +60,6 @@ class game_info():
                         "ENEMY" : [],
                         "HIGHPARTICLE" : []}
 
-        print(type(self.sprites))
-
     class colour_list():
         def __init__(c):
 

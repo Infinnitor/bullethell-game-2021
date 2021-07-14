@@ -1,4 +1,5 @@
 import random
+from pygame import draw
 
 
 def fix_rgb(colour, min=1, max=255):
@@ -19,6 +20,28 @@ def fix_rgb(colour, min=1, max=255):
 def randomize_rgb(colour, upper=-20, lower=20):
     final_colour = [c + random.randint(upper, lower) for c in colour]
     return fix_rgb(final_colour)
+
+
+def rounded_rect(surface, colour, rect, r):
+
+    x, y, width, height = rect
+
+    X1 = x + r
+    Y1 = y + r
+    X2 = x + width - r
+    Y2 = y + height - r
+
+    draw_circles = [
+            (X1, Y1),
+            (X2, Y1),
+            (X1, Y2),
+            (X2, Y2)]
+
+    for pos in draw_circles:
+        draw.circle(surface, colour, pos, r)
+
+    draw.rect(surface, colour, (X1, y, width - r*2, height))
+    draw.rect(surface, colour, (x, Y1, width, height - r*2))
 
 
 class particles():

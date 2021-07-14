@@ -23,7 +23,12 @@ class sprite():
             self.highlight -= 1
 
     def draw_highlight(self, game):
-        draw.circle(game.win, game.colours.green, (self.x, self.y), 10)
+        try:
+            highlight_r = self.r
+        except AttributeError:
+            highlight_r = 10
+
+        draw.circle(game.win, game.colours.green, (self.x, self.y), highlight_r)
 
     def add_default_attr(self):
         try:

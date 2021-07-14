@@ -1,6 +1,6 @@
 from gameinfo import game_info, pygame, time, math, random
-import draw_utils as draw_u
 
+import draw_utils as draw_u
 import move_utils as mv_u
 
 import enemies
@@ -11,33 +11,36 @@ from sprite_class import sprite
 
 # Player class
 class player_class(sprite):
-    def __init__(self, pos, radius, speed, sprites):
+    def __init__(self, pos, radius, speed):
         self.name = "PLAYER"
 
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius
+        self.side = self.r * 2
+
+        self.mysurface = pygame.Surface((self.side, self.side))
 
         self.speed = speed
-        self.default_speed = speed
-        self.focus_speed = self.default_speed // 2
+        self.c = game.colours.green
 
         self.bullet_offset = mv_u.offset_point(self, (0, self.r * -1))
-
-        self.sprites = sprites
 
     def update_move(self, game):
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
-            if self.speed > self.focus_speed:
-                self.speed -= 0.1
+            self.c = game.colours.fullgreen
+
+            if self.side > self.r:
+                self.side -= 1
             else:
-                self.speed = self.focus_speed
+                self.side = self.r
         else:
-            if self.speed < self.default_speed:
-                self.speed += 0.1
+            self.c = game.colours.green
+            if self.side < self.r * 2:
+                self.side += 1
             else:
-                self.speed = self.default_speed
+                self.side = self.r * 2
 
         oldx = self.x
         oldy = self.y
@@ -82,9 +85,21 @@ class player_class(sprite):
                                             target_prox=100))
 
     def update_draw(self, game):
-        a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
 
-        game.win.blit(self.sprites, a_dest)
+        self.mysurface.fill((0, 0, 0))
+
+        surf_rect = (
+            self.r - self.side//2,
+            self.r - self.side//2,
+            self.side,
+            self.side)
+
+        #pygame.draw.rect(self.mysurface, game.colours.green, surf_rect)
+
+        draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.side//4)
+
+        game.win.blit(self.mysurface, (self.x - self.r, self.y - self.r))
+        pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
         self.update_highlight(game)
 
@@ -126,9 +141,6 @@ class standard_bullet(sprite):
     def update_draw(self, game):
         pygame.draw.circle(game.win, game.colours.red, (self.x, self.y), self.r)
         self.update_highlight(game)
-
-    def draw_highlight(self, game):
-        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
 
 
 class tracking_bullet(sprite):
@@ -181,18 +193,14 @@ class tracking_bullet(sprite):
         pygame.draw.circle(game.win, game.colours.blue, (self.x, self.y), self.r)
         self.update_highlight(game)
 
-    def draw_highlight(self, game):
-        pygame.draw.circle(game.win, game.colours.green, (self.x, self.y), self.r)
-
 
 def main_game(game):
 
     player_origin = game.orientate("Center", "Bottom-Center")
     player = player_class(
                         pos=player_origin,
-                        radius=15,
-                        speed=4,
-                        sprites=asset.player.default.convert())
+                        radius=20,
+                        speed=4)
 
     game.add_sprite(player)
 
@@ -211,13 +219,13 @@ def main_game(game):
 
 game = game_info(
                 name="BULLETHELL",
-                win_w=1280,
-                win_h=720,
+                win_w=1920,
+                win_h=1080,
                 user_w=1920,
                 user_h=1080,
                 bg=(1, 1, 1),
                 framecap=60,
-                show_framerate=True,
+                show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
 main_game(game)
