@@ -30,7 +30,6 @@ class game_info():
         else:
             self.sounds = None
 
-        self.colours = self.colour_list()
         self.bg = bg
         self.run = True
 

@@ -2,7 +2,19 @@ import random
 from pygame import draw
 
 
-def fix_rgb(colour, min=1, max=255):
+def rgb_invert(c, min=0, max=255):
+
+    col = max - c
+    if col < min:
+        col = min
+    return col
+
+
+def rgb_compliment(colour):
+    return tuple([rgb_invert(c) for c in colour])
+
+
+def rgb_fix(colour, min=0, max=255):
     assert min > 0 and max < 256, "Min and Max must be between 1 and 255"
 
     fixed_colour = []
@@ -17,9 +29,9 @@ def fix_rgb(colour, min=1, max=255):
     return tuple(fixed_colour)
 
 
-def randomize_rgb(colour, upper=-20, lower=20):
+def rgb_randomize(colour, upper=-20, lower=20):
     final_colour = [c + random.randint(upper, lower) for c in colour]
-    return fix_rgb(final_colour)
+    return rgb_fix(final_colour)
 
 
 def rounded_rect(surface, colour, rect, r):

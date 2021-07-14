@@ -1,6 +1,7 @@
 from sprite_class import sprite
-import pygame
+from pygame import draw
 import random
+import draw_utils as draw_u
 
 
 class enemy_class(sprite):
@@ -27,13 +28,15 @@ class enemy_class(sprite):
             self.y += 4
 
     def update_draw(self, game):
+        self.colour = draw_u.rgb_compliment(game.bg)
+
         if self.sprites is not None:
             a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
 
             game.win.blit(self.sprites, a_dest)
 
         else:
-            pygame.draw.circle(game.win, self.colour, (self.x, self.y), self.r)
+            draw.circle(game.win, self.colour, (self.x, self.y), self.r)
 
     def flash(self):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
