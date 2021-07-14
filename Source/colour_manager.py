@@ -49,15 +49,5 @@ class colour_list():
             c.blue
         )
 
-    def rand(c, choice=False):
-        choice = choice.upper()
-
-        if choice == "ALL":
-            col_list = c.fulllist
-        elif choice == "PRIMARY":
-            col_list = c.primary
-
-        return random.choice(col_list)
-
 
 colours = colour_list()
