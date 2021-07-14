@@ -15,7 +15,7 @@ def rgb_compliment(colour):
 
 
 def rgb_fix(colour, min=0, max=255):
-    assert min > 0 and max < 256, "Min and Max must be between 1 and 255"
+    assert min > -1 and max < 256, "Min and Max must be between 0 and 255"
 
     fixed_colour = []
     for c in colour:
@@ -29,8 +29,8 @@ def rgb_fix(colour, min=0, max=255):
     return tuple(fixed_colour)
 
 
-def rgb_randomize(colour, upper=-20, lower=20):
-    final_colour = [c + random.randint(upper, lower) for c in colour]
+def rgb_randomize(colour, lower=-20, upper=20):
+    final_colour = [c + random.randint(lower, upper) for c in colour]
     return rgb_fix(final_colour)
 
 
@@ -62,7 +62,7 @@ class particles():
 
             final_colour = colour
             if randcol is True:
-                final_colour = randomize_rgb(colour)
+                final_colour = rgb_randomize(colour)
 
             new_part = game.particle(
                                     pos=pos,

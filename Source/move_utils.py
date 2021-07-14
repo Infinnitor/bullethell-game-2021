@@ -13,6 +13,14 @@ def circle_collide(p, q, add=[], attr=True):
         return False
 
 
+def polygon_adjust(polygon, x=0, y=0):
+    new_polygon = []
+    for point in polygon:
+        new_polygon.append((point[0] + x, point[1] + y))
+
+    return new_polygon
+
+
 def rect_collide(a, b, attr=True):
 
     if attr:

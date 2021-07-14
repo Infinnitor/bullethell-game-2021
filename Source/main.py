@@ -17,7 +17,7 @@ class player_class(sprite):
         self.x = pos[0]
         self.y = pos[1]
         self.r = radius
-        self.side = self.r * 2
+        self.side = self.r * 4
 
         self.mysurface = pygame.Surface((self.side, self.side))
 
@@ -31,20 +31,23 @@ class player_class(sprite):
 
     def update_move(self, game):
 
+        self.focus = False
+
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
+            self.focus = True
             self.speed = self.focus_speed
 
-            if self.side > self.r * 1.5:
-                self.side -= 1
+            if self.side > self.r:
+                self.side -= 2
             else:
-                self.side = self.r * 1.5
+                self.side = self.r
         else:
             self.speed = self.default_speed
 
-            if self.side < self.r * 2:
-                self.side += 1
+            if self.side < self.r * 4:
+                self.side += 2
             else:
-                self.side = self.r * 2
+                self.side = self.r * 4
 
         oldx = self.x
         oldy = self.y
@@ -69,10 +72,10 @@ class player_class(sprite):
         elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, timebuffer=7):
+        if game.check_key(pygame.K_SPACE, pygame.K_x, timebuffer=7):
             game.add_sprite(standard_bullet(
                                     pos=self.bullet_offset.get_pos(),
-                                    radius=self.r//2,
+                                    radius=self.r * 0.75,
                                     speed=10,
                                     angle=-90,
                                     sprites=None,
@@ -82,7 +85,7 @@ class player_class(sprite):
             t = game.sprites["ENEMY"][0]
             game.add_sprite(tracking_bullet(
                                             pos=self.bullet_offset.get_pos(),
-                                            radius=self.r//2,
+                                            radius=self.r * 0.75,
                                             speed=10,
                                             sprites=None,
                                             target=t,
@@ -90,20 +93,30 @@ class player_class(sprite):
 
     def update_draw(self, game):
 
-        self.mysurface.fill((0, 0, 0))
+        self.mysurface.fill(colours.colourkey)
+        self.mysurface.set_colorkey(colours.colourkey)
 
         surf_rect = (
-            self.r - self.side//2,
-            self.r - self.side//2,
+            self.r*2 - self.side//2,
+            self.r*2 - self.side//2,
             self.side,
             self.side)
 
-        if self.side < self.r * 2:
-            draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.side//4)
+        if self.side < self.r * 4:
+            if self.focus:
+                if self.rounding_r < self.side//4:
+                    self.rounding_r += 1
+            else:
+                if self.rounding_r > self.side//4:
+                    self.rounding_r -= 1
+
+            draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.rounding_r)
+
         else:
+            self.rounding_r = 0
             pygame.draw.rect(self.mysurface, self.c, surf_rect)
 
-        game.win.blit(self.mysurface, (self.x - self.r, self.y - self.r))
+        game.win.blit(self.mysurface, (self.x - self.r * 2, self.y - self.r * 2))
         pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
         self.update_highlight(game)
@@ -128,10 +141,13 @@ class standard_bullet(sprite):
 
         self.sprites = sprites
 
+        self.c = colours.fullblack
+
     def update_move(self, game):
         if self.onscreen(game):
-            self.x += self.xmove * self.speed
-            self.y += self.ymove * self.speed
+            if not game.check_key(pygame.K_r):
+                self.x += self.xmove * self.speed
+                self.y += self.ymove * self.speed
         else:
             self.destroy = True
 
@@ -144,7 +160,16 @@ class standard_bullet(sprite):
                     self.kill()
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
+        # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
+
+        triangle = (
+            (self.x, self.y - self.r*2),
+            (self.x - self.r, self.y),
+            (self.x, self.y + self.r*2),
+            (self.x + self.r, self.y),
+        )
+
+        pygame.draw.polygon(game.win, self.c, triangle)
         self.update_highlight(game)
 
 
@@ -171,6 +196,8 @@ class tracking_bullet(sprite):
 
         self.sprites = sprites
 
+        self.c = colours.fullblack
+
     def update_move(self, game):
 
         if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
@@ -195,7 +222,7 @@ class tracking_bullet(sprite):
             self.destroy = True
 
     def update_draw(self, game):
-        pygame.draw.circle(game.win, colours.blue, (self.x, self.y), self.r)
+        pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
         self.update_highlight(game)
 
 
@@ -204,7 +231,7 @@ def main_game(game):
     player_origin = game.orientate("Center", "Bottom-Center")
     player = player_class(
                         pos=player_origin,
-                        radius=20,
+                        radius=12,
                         speed=7)
 
     game.add_sprite(player)
@@ -228,7 +255,7 @@ game = game_info(
                 win_h=1080,
                 user_w=1920,
                 user_h=1080,
-                bg=(155, 0, 0),
+                bg=colours.red,
                 framecap=60,
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
