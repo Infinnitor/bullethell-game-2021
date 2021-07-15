@@ -5,6 +5,7 @@ import draw_utils as draw_u
 import move_utils as mv_u
 
 import enemies
+import bullets
 
 from sprite_class import sprite
 
@@ -72,24 +73,33 @@ class player_class(sprite):
         elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, pygame.K_x, timebuffer=7):
-            game.add_sprite(standard_bullet(
+        if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
+            game.add_sprite(bullets.standard(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
                                     speed=10,
                                     angle=-90,
-                                    sprites=None,
                                     target="ENEMY"))
 
-        if game.check_key(pygame.K_z, timebuffer=7):
+        if game.check_key(pygame.K_x, timebuffer=7):
             t = game.sprites["ENEMY"][0]
-            game.add_sprite(tracking_bullet(
-                                            pos=self.bullet_offset.get_pos(),
-                                            radius=self.r * 0.75,
-                                            speed=10,
-                                            sprites=None,
-                                            target=t,
-                                            target_prox=100))
+            game.add_sprite(bullets.prox(
+                                        pos=self.bullet_offset.get_pos(),
+                                        radius=self.r * 0.75,
+                                        speed=10,
+                                        target=t,
+                                        target_prox=100))
+
+        if game.check_key(pygame.K_c, timebuffer=7):
+            t = game.sprites["ENEMY"][0]
+            game.add_sprite(bullets.homing(
+                                        pos=self.bullet_offset.get_pos(),
+                                        radius=self.r * 0.75,
+                                        speed=10,
+                                        angle=-90,
+                                        target=t,
+                                        target_prox=0,
+                                        homing=5))
 
     def update_draw(self, game):
 
@@ -122,110 +132,6 @@ class player_class(sprite):
         self.update_highlight(game)
 
 
-class standard_bullet(sprite):
-    def __init__(self, pos, radius, speed, angle, sprites, target=""):
-        self.name = "BULLET"
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-        self.angle = angle
-
-        a = math.radians(self.angle)
-        self.xmove = math.cos(a)
-        self.ymove = math.sin(a)
-
-        self.target = target
-
-        self.sprites = sprites
-
-        self.c = colours.fullblack
-
-    def update_move(self, game):
-        if self.onscreen(game):
-            if not game.check_key(pygame.K_r):
-                self.x += self.xmove * self.speed
-                self.y += self.ymove * self.speed
-        else:
-            self.destroy = True
-
-        if self.target != "":
-
-            for t in game.sprites[self.target]:
-
-                if mv_u.circle_collide(self, t):
-                    t.flash()
-                    self.kill()
-
-    def update_draw(self, game):
-        # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
-
-        triangle = (
-            (self.x, self.y - self.r*2),
-            (self.x - self.r, self.y),
-            (self.x, self.y + self.r*2),
-            (self.x + self.r, self.y),
-        )
-
-        pygame.draw.polygon(game.win, self.c, triangle)
-        self.update_highlight(game)
-
-
-class tracking_bullet(sprite):
-    def __init__(self, pos, radius, speed, sprites, target=None, target_prox=1):
-        self.name = "BULLET"
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-
-        self.target = target
-        self.target_prox = target_prox
-        self.target_update = True
-
-        a = -90
-        if self.target is not None:
-            a = math.atan2(self.target.y - self.y, self.target.x - self.x)
-
-            self.xmove = math.cos(a)
-            self.ymove = math.sin(a)
-
-        self.sprites = sprites
-
-        self.c = colours.fullblack
-
-    def update_move(self, game):
-
-        if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
-            self.target_update = False
-
-        if self.target_update:
-            a = -90
-            if self.target is not None:
-                a = math.atan2(self.target.y - self.y, self.target.x - self.x)
-
-            self.xmove = math.cos(a)
-            self.ymove = math.sin(a)
-
-        if mv_u.circle_collide(self, self.target):
-            self.target.flash()
-            self.kill()
-
-        if self.onscreen(game):
-            self.x += self.xmove * self.speed
-            self.y += self.ymove * self.speed
-        else:
-            self.destroy = True
-
-    def update_draw(self, game):
-        pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
-        self.update_highlight(game)
-
-
 def main_game(game):
 
     player_origin = game.orientate("Center", "Bottom-Center")
@@ -253,8 +159,8 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=colours.red,
                 framecap=60,
                 show_framerate=False,

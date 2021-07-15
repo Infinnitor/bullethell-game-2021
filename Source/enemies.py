@@ -38,5 +38,7 @@ class enemy_class(sprite):
         else:
             draw.circle(game.win, self.colour, (self.x, self.y), self.r)
 
+        self.update_highlight(game)
+
     def flash(self):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
