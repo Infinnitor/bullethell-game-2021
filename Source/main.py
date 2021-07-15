@@ -79,7 +79,7 @@ class player_class(sprite):
                                     radius=self.r * 0.75,
                                     speed=10,
                                     angle=-90,
-                                    target="ENEMY"))
+                                    collider="ENEMY"))
 
         if game.check_key(pygame.K_x, timebuffer=7):
             t = game.sprites["ENEMY"][0]

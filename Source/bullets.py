@@ -11,16 +11,27 @@ from colour_manager import colours
 class bullet(sprite):
     def update_move(self, game):
         self.update_bullet(game)
-        self.update_tracking(game)
+        self.update_collisions(game)
 
     def update_bullet(self, game):
         pass
 
-    def update_tracking(self, game):
-        pass
+    def update_collisions(self, game):
+        if self.collider != "":
+            for obj in game.sprites[self.collider]:
+                if mv_u.circle_collide(self, obj):
+                    repr(obj)
+                    self.kill()
+
+class tracking_bullet(bullet):
+    def update_move(self, game):
+        self.update_tracking(game)
+        self.update_bullet(game)
+        self.update_collisions(game)
+
 
 class standard(bullet):
-    def __init__(self, pos, radius, speed, angle, target=""):
+    def __init__(self, pos, radius, speed, angle, collider=""):
         self.name = "BULLET"
 
         self.x = pos[0]
@@ -34,7 +45,7 @@ class standard(bullet):
         self.xmove = math.cos(a)
         self.ymove = math.sin(a)
 
-        self.target = target
+        self.collider = collider
 
         self.c = colours.fullblack
 
@@ -44,14 +55,6 @@ class standard(bullet):
             self.y += self.ymove * self.speed
         else:
             self.destroy = True
-
-        if self.target != "":
-
-            for t in game.sprites[self.target]:
-
-                if mv_u.circle_collide(self, t):
-                    t.flash()
-                    self.kill()
 
     def update_draw(self, game):
         # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
@@ -67,8 +70,8 @@ class standard(bullet):
         self.update_highlight(game)
 
 
-class prox(bullet):
-    def __init__(self, pos, radius, speed, target=None, target_prox=1):
+class prox(tracking_bullet):
+    def __init__(self, pos, radius, speed, target=None, target_prox=1, collider=""):
         self.name = "BULLET"
 
         self.x = pos[0]
@@ -89,6 +92,8 @@ class prox(bullet):
             self.ymove = math.sin(a)
 
         self.c = colours.fullblack
+
+        self.collider = collider
 
     def update_bullet(self, game):
 
@@ -121,8 +126,8 @@ class prox(bullet):
 
 
 # Work in progress
-class homing(bullet):
-    def __init__(self, pos, radius, speed, angle, target=None, target_prox=1, homing=1):
+class homing(tracking_bullet):
+    def __init__(self, pos, radius, speed, angle, target=None, target_prox=1, homing=1, collider=""):
         self.name = "BULLET"
 
         self.x = pos[0]
@@ -147,6 +152,8 @@ class homing(bullet):
 
         self.c = colours.fullblack
 
+        self.collider = collider
+
     def update_bullet(self, game):
 
         if mv_u.circle_collide(self, self.target):
@@ -169,10 +176,8 @@ class homing(bullet):
                 target_a = math.atan2(self.target.y - self.y, self.target.x - self.x)
 
             if self.angle > math.degrees(target_a):
-                self.c = colours.fullcyan
                 self.angle -= self.homing
             elif self.angle < math.degrees(target_a):
-                self.c = colours.fullgreen
                 self.angle += self.homing
 
             self.xmove = math.cos(math.radians(self.angle))
