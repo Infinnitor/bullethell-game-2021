@@ -88,7 +88,8 @@ class player_class(sprite):
                                         radius=self.r * 0.75,
                                         speed=10,
                                         target=t,
-                                        target_prox=100))
+                                        target_prox=100,
+                                        collider="ENEMY"))
 
         if game.check_key(pygame.K_c, timebuffer=7):
             t = game.sprites["ENEMY"][0]
@@ -99,7 +100,8 @@ class player_class(sprite):
                                         angle=-90,
                                         target=t,
                                         target_prox=0,
-                                        homing=5))
+                                        homing=5,
+                                        collider="ENEMY"))
 
     def update_draw(self, game):
 
