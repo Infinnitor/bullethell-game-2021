@@ -18,7 +18,7 @@ game = game_info(
                 user_h=720,
                 bg=(0, 0, 0),
                 framecap=60,
-                show_framerate=True,
+                show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
 sq1 = [
@@ -43,7 +43,7 @@ tr1 = [
 ]
 
 morph = mv_u.polygon_morph(sq1, sq2, tr1)
-morph.init_morph(1, 2)
+morph.init_morph(1, frames=20)
 ln = 2
 
 while game.run:
@@ -51,11 +51,11 @@ while game.run:
     game.update_draw()
 
     if game.check_key(pygame.K_LEFT):
-        morph.init_morph(1, 2)
+        morph.init_morph(1, frames=20)
     elif game.check_key(pygame.K_RIGHT):
-        morph.init_morph(0, 2)
+        morph.init_morph(0, frames=20)
     elif game.check_key(pygame.K_UP):
-        morph.init_morph(2, 2)
+        morph.init_morph(2, frames=20)
 
     pygame.draw.polygon(game.win, colours.red, morph.get())
 

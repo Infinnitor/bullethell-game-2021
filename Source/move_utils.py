@@ -1,5 +1,6 @@
 import math
 import copy
+import random
 
 
 def circle_collide(p, q, add=[], attr=True):
@@ -122,11 +123,8 @@ class poly_morph():
             for p2 in morph2:
                 points_dist.append(math.dist(p1, p2))
 
-            print(points_dist)
-            print(min(points_dist))
             for i, dist in enumerate(points_dist):
                 if dist == min(points_dist):
-                    print(True)
                     self.sorted_points.append(morph2.pop(i))
                     break
 
@@ -150,6 +148,8 @@ class poly_morph():
 class polygon_morph(poly_morph):
     def __init__(self, *shapes):
         self.shapes = shapes
+        assert sum([len(s) for s in self.shapes]) == max([len(s) for s in self.shapes]) * len(self.shapes), "All shapes must have an equal amount of points"
+
         self.polygon = self.shapes[0]
 
         self.step = 1
@@ -161,7 +161,7 @@ class polygon_morph(poly_morph):
     def add(self, new_shape):
         self.shapes.append(new_shape)
 
-    def init_morph(self, target, step):
+    def init_morph(self, target, frames):
 
         if target == self.target:
             return
@@ -173,7 +173,7 @@ class polygon_morph(poly_morph):
         self.morph2 = self.shapes[target]
 
         self.iter = 0
-        self.step = step
+        self.step = 100 / frames
 
         self.init_morph_calc()
 
