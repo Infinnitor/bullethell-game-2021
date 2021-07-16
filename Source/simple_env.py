@@ -94,12 +94,14 @@ while game.run:
     # elif game.check_key(pygame.K_DOWN):
     #     morph.init_morph(3, frames=10)
 
-    pygame.draw.polygon(game.win, colours.blue, morph.shapes[iter - 1])
-    pygame.draw.polygon(game.win, colours.red, morph.get())
+    # pygame.draw.polygon(game.win, colours.blue, morph.shapes[iter - 1])
+    # pygame.draw.polygon(game.win, colours.red, morph.get())
 
-    for i, lines, in enumerate(zip(morph.morph1, morph.sorted_points)):
-        if i % 2 != 0:
-            pygame.draw.line(game.win, ln_colours[i], lines[0], lines[1], 2)
+    draw_u.corrected_polygon(game.win, colours.red, morph.get(), game)
+
+    # for i, lines, in enumerate(zip(morph.morph1, morph.sorted_points)):
+    #     if i % 2 != 0:
+    #         pygame.draw.line(game.win, ln_colours[i], lines[0], lines[1], 2)
 
     game.update_scaled()
     game.update_state()
