@@ -110,7 +110,7 @@ class sine_bob():
             return 0
 
 
-class poly_morph():
+class morph():
 
     def init_morph_calc(self):
 
@@ -145,7 +145,7 @@ class poly_morph():
         return ret
 
 
-class polygon_morph(poly_morph):
+class polygon_morph(morph):
     def __init__(self, *shapes):
         self.shapes = shapes
         assert sum([len(s) for s in self.shapes]) == max([len(s) for s in self.shapes]) * len(self.shapes), "All shapes must have an equal amount of points"
