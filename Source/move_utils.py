@@ -200,8 +200,14 @@ class offset_polygon(offset, morph):
 
         self.log_shapes(shapes)
 
-    def get(self):
-        self.update_pos()
+    def get(self, anchor=(0, 0)):
+        if self.iter < 100:
+            self.iter += self.step
+        else:
+            self.iter = 100
+            self.morphing = False
+
+        self.update_pos(anchor)
 
         if self.morphing is True:
             self.morph()
@@ -209,5 +215,7 @@ class offset_polygon(offset, morph):
         ret_polygon = []
         for x, y in self.polygon:
             ret_polygon.append([x + self.x, y + self.y])
+
+        print(ret_polygon)
 
         return ret_polygon

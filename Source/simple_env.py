@@ -22,31 +22,31 @@ game = game_info(
                 quit_key=pygame.K_ESCAPE)
 
 sq1 = [
+    [0, 0],
+    [200, 0],
     [200, 200],
-    [400, 200],
-    [400, 400],
-    [200, 400],
+    [0, 200],
 ]
 
 sq2 = [
-    [250, 250],
-    [350, 250],
-    [350, 350],
-    [250, 350],
+    [-50, -50],
+    [50, -50],
+    [50, 50],
+    [-50, 50],
 ]
 
 tr1 = [
-    [400, 400],
-    [200, 400],
-    [300, 200],
-    [300, 200],
+    [0, 0],
+    [0, 200],
+    [100, 0],
+    [100, 0],
 ]
 
 tr2 = [
-    [200, 200],
-    [400, 200],
-    [300, 400],
-    [300, 400]
+    [0, 0],
+    [200, 0],
+    [100, 200],
+    [100, 200]
 ]
 
 dm1 = [
@@ -63,10 +63,8 @@ dm2 = [
     [400, 300]
 ]
 
-morph = mv_u.polygon(sq1, sq2, tr1, tr2, dm1, dm2)
-morph.init_morph(0, frames=20)
-
-follow_morph = mv_u.offset_polygon(sq1, sq2, tr1, tr2, dm1, dm2, offset=(0, 0))
+# morph = mv_u.polygon(sq1, sq2, tr1, tr2, dm1, dm2)
+morph = mv_u.offset_polygon(sq1, sq2, tr1, tr2, dm1, dm2, offset=(0, 0))
 iter = 0
 
 while game.run:
@@ -90,8 +88,12 @@ while game.run:
     if start_morph:
         if morph.morphing is False:
             morph.init_morph(iter, frames=20)
+            start_morph = False
 
-    pygame.draw.polygon(game.win, colours.red, morph.get())
+    # pygame.draw.polygon(game.win, colours.red, morph.get())
+    m = morph.get(game.mouse_pos)
+    print(m)
+    pygame.draw.polygon(game.win, colours.fullcyan, m)
 
     for i, lines, in enumerate(zip(morph.morph1, morph.morph2)):
         pygame.draw.line(game.win, colours.green, lines[0], lines[1], 2)
