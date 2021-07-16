@@ -103,7 +103,7 @@ class game_info():
                     pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.size)
 
                 elif part.shape == "SQUARE":
-                    pass
+                    pygame.draw.rect(game.win, part.colour, (part.x, part.y, part.size, part.size))
 
                 else:
                     raise AttributeError(f"{part.shape} is not a valid shape for a particle")
