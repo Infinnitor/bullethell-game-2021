@@ -15,14 +15,14 @@ def circle_collide(p, q, add=[], attr=True):
         return False
 
 
-def midpoint(p, q, attr=True, int_c=False):
+def midpoint(p, q, attr=True, rounding=False):
     if attr:
         ret = [(p.x + q.x) / 2, (p.y + q.y) / 2]
     else:
         ret = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]
 
-    if int_c:
-        ret = [int(r) for r in ret]
+    if rounding:
+        ret = [round(r) for r in ret]
     return ret
 
 
