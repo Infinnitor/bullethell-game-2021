@@ -144,9 +144,6 @@ class game_info():
 
         return False # Safety Clause
 
-    def rotate_rect(self, rect, angle):
-        pass
-
     def playsound(self, name):
 
         assert name in self.sounds, f"{name} is an undefined sound"
