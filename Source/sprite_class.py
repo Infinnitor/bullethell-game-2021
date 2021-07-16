@@ -9,7 +9,7 @@ class sprite():
 
     def __repr__(self):
         self.highlight = 30
-        return f"{self.name} at position {self.x}, {self.y}"
+        return f"{self.layer} at position {self.x}, {self.y}"
 
     def update_move(self, game):
         pass

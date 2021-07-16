@@ -46,7 +46,7 @@ class enemy_class(sprite):
 
 class enemy_explosion(sprite):
     def __init__(self, pos, speed):
-        self.name = "BACKGROUND"
+        self.layer = "BACKGROUND"
 
         self.x = pos[0]
         self.y = pos[1]

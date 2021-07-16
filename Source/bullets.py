@@ -129,7 +129,7 @@ class prox(tracking_bullet):
 # Work in progress
 class homing(tracking_bullet):
     def __init__(self, pos, radius, speed, angle, target=None, target_prox=1, homing=1, collider=""):
-        self.name = "BULLET"
+        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]
