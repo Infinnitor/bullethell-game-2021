@@ -1,5 +1,4 @@
 import math
-import copy
 import random
 
 
@@ -63,9 +62,17 @@ def rect_collide(a, b, attr=True):
 
 
 class offset():
-    def update_pos(self):
-        self.x = self.parent.x + self.offset_x
-        self.y = self.parent.y + self.offset_y
+    def update_pos(self, anchor=(0, 0)):
+        if self.parent is not None:
+            anchor = (self.parent.x, self.parent.y)
+
+        self.x = anchor[0] + self.offset_x
+        self.y = anchor[1] + self.offset_y
+
+    def get_pos(self, anchor=(0, 0)):
+        self.update_pos(anchor)
+
+        return [self.x, self.y]
 
 
 class offset_point(offset):
@@ -78,11 +85,6 @@ class offset_point(offset):
 
         self.update_pos()
 
-    def get_pos(self):
-        self.update_pos()
-
-        return [self.x, self.y]
-
 
 class offset_circle(offset):
     def __init__(self, parent, offset, radius):
@@ -94,11 +96,6 @@ class offset_circle(offset):
 
         self.update_pos()
         self.r = radius
-
-    def get_pos(self):
-        self.update_pos()
-
-        return [self.x, self.y]
 
 
 class sine_bob():
@@ -123,27 +120,7 @@ class sine_bob():
 
 class morph():
 
-    def init_morph_calc(self):
-
-        self.sorted_points_mv = []
-        for a, b in zip(self.morph1, self.morph2):
-            x_d = b[0] - a[0]
-            y_d = b[1] - a[1]
-
-            self.sorted_points_mv.append([x_d, y_d])
-
-    def morph(self):
-        ret = []
-        for c, d in zip(self.morph1, self.sorted_points_mv):
-            mv_x = c[0] + (d[0] * (self.iter / 100))
-            mv_y = c[1] + (d[1] * (self.iter / 100))
-            ret.append([mv_x, mv_y])
-
-        return ret
-
-
-class polygon_morph(morph):
-    def __init__(self, *shapes):
+    def log_shapes(self, shapes):
         self.shapes = shapes
         assert sum([len(s) for s in self.shapes]) == max([len(s) for s in self.shapes]) * len(self.shapes), "All shapes must have an equal amount of points"
 
@@ -155,24 +132,50 @@ class polygon_morph(morph):
         self.morphing = False
         self.target = 0
 
+        self.init_morph(0, frames=1)
+
     def add(self, new_shape):
+        assert len(new_shape) == max([len(s) for s in self.shapes]), "Number of points on added shape must be equal to that of existing shapes"
         self.shapes.append(new_shape)
 
     def init_morph(self, target, frames):
 
+        self.morph1 = self.polygon
+        self.morph2 = self.shapes[target]
         if target == self.target:
             return
 
         self.morphing = True
         self.target = target
 
-        self.morph1 = self.polygon
-        self.morph2 = self.shapes[target]
-
         self.iter = 0
         self.step = 100 / frames
 
         self.init_morph_calc()
+
+    def init_morph_calc(self):
+
+        self.sorted_points_mv = []
+        for a, b in zip(self.morph1, self.morph2):
+            x_d = b[0] - a[0]
+            y_d = b[1] - a[1]
+
+            self.sorted_points_mv.append([x_d, y_d])
+
+    def morph(self):
+        morph_polygon = []
+        for c, d in zip(self.morph1, self.sorted_points_mv):
+            mv_x = c[0] + (d[0] * (self.iter / 100))
+            mv_y = c[1] + (d[1] * (self.iter / 100))
+            morph_polygon.append([mv_x, mv_y])
+
+        self.polygon = morph_polygon
+
+
+class polygon(morph):
+
+    def __init__(self, *shapes):
+        self.log_shapes(shapes)
 
     def get(self):
         if self.iter < 100:
@@ -182,6 +185,29 @@ class polygon_morph(morph):
             self.morphing = False
 
         if self.morphing is True:
-            self.polygon = self.morph()
+            self.morph()
 
         return self.polygon
+
+
+class offset_polygon(offset, morph):
+    def __init__(self, *shapes, offset, parent=None):
+
+        self.offset_x = offset[0]
+        self.offset_y = offset[1]
+
+        self.parent = parent
+
+        self.log_shapes(shapes)
+
+    def get(self):
+        self.update_pos()
+
+        if self.morphing is True:
+            self.morph()
+
+        ret_polygon = []
+        for x, y in self.polygon:
+            ret_polygon.append([x + self.x, y + self.y])
+
+        return ret_polygon
