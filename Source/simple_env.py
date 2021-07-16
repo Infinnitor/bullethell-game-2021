@@ -49,24 +49,55 @@ tr2 = [
     [300, 400]
 ]
 
-morph = mv_u.polygon_morph(sq1, sq2, tr1, tr2)
+dm1 = [
+    [300, 200],
+    [400, 300],
+    [300, 400],
+    [200, 300]
+]
+
+dm2 = [
+    [500, 200],
+    [600, 300],
+    [500, 400],
+    [400, 300]
+]
+
+morph = mv_u.polygon_morph(sq1, sq2, tr1, tr2, dm1, dm2)
 morph.init_morph(1, frames=20)
 ln = 2
+iter = 0
 
 while game.run:
     game.update_keys()
     game.update_draw()
 
-    if game.check_key(pygame.K_LEFT):
-        morph.init_morph(0, frames=10)
-    elif game.check_key(pygame.K_RIGHT):
-        morph.init_morph(1, frames=10)
-    elif game.check_key(pygame.K_UP):
-        morph.init_morph(2, frames=10)
-    elif game.check_key(pygame.K_DOWN):
-        morph.init_morph(3, frames=10)
+    if game.check_key(pygame.K_LEFT, buffer=True):
+        iter -= 1
+        if iter < 0:
+            iter = 0
+    elif game.check_key(pygame.K_RIGHT, buffer=True):
+        iter += 1
+        if iter > len(morph.shapes) - 1:
+            iter = len(morph.shapes) - 1
 
+    if morph.morphing is False:
+        morph.init_morph(iter, frames=10)
+
+    # if game.check_key(pygame.K_LEFT):
+    #     morph.init_morph(0, frames=10)
+    # elif game.check_key(pygame.K_RIGHT):
+    #     morph.init_morph(1, frames=10)
+    # elif game.check_key(pygame.K_UP):
+    #     morph.init_morph(2, frames=10)
+    # elif game.check_key(pygame.K_DOWN):
+    #     morph.init_morph(3, frames=10)
+
+    pygame.draw.polygon(game.win, colours.blue, morph.shapes[iter - 1])
     pygame.draw.polygon(game.win, colours.red, morph.get())
+
+    for l1, l2 in zip(morph.morph1, morph.sorted_points):
+        pygame.draw.line(game.win, colours.green, l1, l2, ln)
 
     game.update_scaled()
     game.update_state()

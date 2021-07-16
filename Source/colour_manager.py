@@ -1,3 +1,5 @@
+import random
+
 class colour_list():
     def __init__(c):
 
@@ -24,7 +26,7 @@ class colour_list():
 
         c.colourkey = (0, 0, 0)
 
-        c.fulllist = (
+        c.full_list = (
             c.fullred,
             c.fullgreen,
             c.fullblue,
@@ -48,6 +50,9 @@ class colour_list():
             c.green,
             c.blue
         )
+
+    def rand(c):
+        return random.choice(c.full_list)
 
 
 colours = colour_list()
