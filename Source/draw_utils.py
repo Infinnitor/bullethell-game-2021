@@ -2,36 +2,35 @@ import random
 from pygame import draw
 
 
-def rgb_invert(c, min=0, max=255):
+class rgb():
 
-    col = max - c
-    if col < min:
-        col = min
-    return col
+    def invert(c, min=0, max=255):
 
+        col = max - c
+        if col < min:
+            col = min
+        return col
 
-def rgb_compliment(colour):
-    return tuple([rgb_invert(c) for c in colour])
+    def compliment(colour):
+        return tuple([rgb.invert(c) for c in colour])
 
+    def fix(colour, min=0, max=255):
+        assert min > -1 and max < 256, "Min and Max must be between 0 and 255"
 
-def rgb_fix(colour, min=0, max=255):
-    assert min > -1 and max < 256, "Min and Max must be between 0 and 255"
+        fixed_colour = []
+        for c in colour:
+            if c > max:
+                c = max
+            elif c < min:
+                c = min
 
-    fixed_colour = []
-    for c in colour:
-        if c > max:
-            c = max
-        elif c < min:
-            c = min
+            fixed_colour.append(c)
 
-        fixed_colour.append(c)
+        return tuple(fixed_colour)
 
-    return tuple(fixed_colour)
-
-
-def rgb_randomize(colour, lower=-20, upper=20):
-    final_colour = [c + random.randint(lower, upper) for c in colour]
-    return rgb_fix(final_colour)
+    def randomize(colour, lower=-20, upper=20):
+        final_colour = [c + random.randint(lower, upper) for c in colour]
+        return rgb.fix(final_colour)
 
 
 def rounded_rect(surface, colour, rect, r):
@@ -62,7 +61,7 @@ class particles():
 
             final_colour = colour
             if randcol is True:
-                final_colour = rgb_randomize(colour)
+                final_colour = rgb.randomize(colour)
 
             new_part = game.particle(
                                     pos=pos,

@@ -28,7 +28,7 @@ class enemy_class(sprite):
             self.y += 4
 
     def update_draw(self, game):
-        self.colour = draw_u.rgb_compliment(game.bg)
+        self.colour = draw_u.rgb.compliment(game.bg)
 
         if self.sprites is not None:
             a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
@@ -42,3 +42,11 @@ class enemy_class(sprite):
 
     def flash(self):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
+
+
+class enemy_explosion(sprite):
+    def __init__(self, pos, speed):
+        self.name = "BACKGROUND"
+
+        self.x = pos[0]
+        self.y = pos[1]

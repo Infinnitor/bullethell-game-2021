@@ -12,6 +12,17 @@ from sprite_class import sprite
 
 # Player class
 class player_class(sprite):
+
+    class player_defaults():
+        def __init__(p, parent):
+            p.parent = parent
+
+            p.speed = p.parent.speed
+            p.focus_speed = p.parent.speed / 2
+
+            p.focus_size = p.parent.r * 4
+            p.focus_reduce = 4
+
     def __init__(self, pos, radius, speed):
         self.name = "PLAYER"
 
@@ -23,12 +34,13 @@ class player_class(sprite):
         self.mysurface = pygame.Surface((self.side, self.side))
 
         self.speed = speed
-        self.default_speed = speed
-        self.focus_speed = speed / 2
 
         self.c = colours.fullblack
 
         self.bullet_offset = mv_u.offset_point(self, (0, self.r * -1))
+
+        # Defaults for player
+        self.defaults = self.player_defaults(self)
 
     def update_move(self, game):
 
@@ -36,19 +48,19 @@ class player_class(sprite):
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             self.focus = True
-            self.speed = self.focus_speed
+            self.speed = self.defaults.focus_speed
 
             if self.side > self.r:
-                self.side -= 2
+                self.side -= self.defaults.focus_reduce
             else:
                 self.side = self.r
         else:
-            self.speed = self.default_speed
+            self.speed = self.defaults.speed
 
-            if self.side < self.r * 4:
-                self.side += 2
+            if self.side < self.defaults.focus_size:
+                self.side += self.defaults.focus_reduce
             else:
-                self.side = self.r * 4
+                self.side = self.r * self.defaults.focus_reduce
 
         oldx = self.x
         oldy = self.y
@@ -114,12 +126,12 @@ class player_class(sprite):
             self.side,
             self.side)
 
-        if self.side < self.r * 4:
+        if self.side < self.defaults.focus_size:
             if self.focus:
-                if self.rounding_r < self.side//4:
+                if self.rounding_r < self.side//self.defaults.focus_reduce:
                     self.rounding_r += 1
             else:
-                if self.rounding_r > self.side//4:
+                if self.rounding_r > self.side//self.defaults.focus_reduce:
                     self.rounding_r -= 1
 
             draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.rounding_r)

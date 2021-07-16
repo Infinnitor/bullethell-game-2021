@@ -1,4 +1,5 @@
 import math
+import copy
 
 
 def circle_collide(p, q, add=[], attr=True):
@@ -106,3 +107,84 @@ class sine_bob():
             return self.y_mod
         else:
             return 0
+
+
+class poly_morph():
+
+    def init_morph_calc(self):
+
+        self.sorted_points = []
+        morph2 = copy.copy(self.morph2)
+
+        for iter, p1 in enumerate(self.morph1):
+
+            points_dist = []
+            for p2 in morph2:
+                points_dist.append(math.dist(p1, p2))
+
+            print(points_dist)
+            print(min(points_dist))
+            for i, dist in enumerate(points_dist):
+                if dist == min(points_dist):
+                    print(True)
+                    self.sorted_points.append(morph2.pop(i))
+                    break
+
+        self.sorted_points_mv = []
+        for a, b in zip(self.morph1, self.sorted_points):
+            x_d = b[0] - a[0]
+            y_d = b[1] - a[1]
+
+            self.sorted_points_mv.append([x_d, y_d])
+
+    def morph(self):
+        ret = []
+        for c, d in zip(self.morph1, self.sorted_points_mv):
+            mv_x = c[0] + (d[0] * (self.iter / 100))
+            mv_y = c[1] + (d[1] * (self.iter / 100))
+            ret.append([mv_x, mv_y])
+
+        return ret
+
+
+class polygon_morph(poly_morph):
+    def __init__(self, *shapes):
+        self.shapes = shapes
+        self.polygon = self.shapes[0]
+
+        self.step = 1
+        self.iter = 0
+
+        self.morphing = False
+        self.target = 0
+
+    def add(self, new_shape):
+        self.shapes.append(new_shape)
+
+    def init_morph(self, target, step):
+
+        if target == self.target:
+            return
+
+        self.morphing = True
+        self.target = target
+
+        self.morph1 = self.polygon
+        self.morph2 = self.shapes[target]
+
+        self.iter = 0
+        self.step = step
+
+        self.init_morph_calc()
+
+    def get(self):
+        if self.iter < 100:
+            self.iter += self.step
+        else:
+            self.iter = 100
+            self.morphing = False
+
+        if self.morphing is True:
+            self.polygon = self.morph()
+
+        return self.polygon
