@@ -71,5 +71,5 @@ class particles():
                                     lifetime=lifetime,
                                     colour=final_colour)
 
-            new_part.name = layer + "PARTICLE"
+            new_part.layer = layer + "PARTICLE"
             game.add_sprite(new_part)

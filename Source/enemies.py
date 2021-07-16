@@ -6,7 +6,7 @@ import draw_utils as draw_u
 
 class enemy_class(sprite):
     def __init__(self, pos, radius, sprites=None):
-        self.name = "ENEMY"
+        self.layer = "ENEMY"
 
         self.x = pos[0]
         self.y = pos[1]

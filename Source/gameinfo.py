@@ -155,9 +155,9 @@ class game_info():
         new_sprite.add_default_attr()
 
         try:
-            self.sprites[new_sprite.name].append(new_sprite)
+            self.sprites[new_sprite.layer].append(new_sprite)
         except KeyError:
-            self.sprites[new_sprite.name] = [new_sprite]
+            self.sprites[new_sprite.layer] = [new_sprite]
 
     def purge_sprites(self):
         self.sprites = []

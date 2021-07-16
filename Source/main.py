@@ -24,7 +24,7 @@ class player_class(sprite):
             p.focus_reduce = 4
 
     def __init__(self, pos, radius, speed):
-        self.name = "PLAYER"
+        self.layer = "PLAYER"
 
         self.x = pos[0]
         self.y = pos[1]

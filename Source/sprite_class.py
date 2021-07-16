@@ -1,3 +1,5 @@
+import traceback
+
 from pygame import transform, draw
 from colour_manager import colours
 
@@ -33,9 +35,10 @@ class sprite():
 
     def add_default_attr(self):
         try:
-            self.name
+            self.layer
         except AttributeError:
-            self.name = str(type(self))
+            self.layer = str(type(self))
+            traceback.print_exc()
 
         self.destroy = False
         self.highlight = 0

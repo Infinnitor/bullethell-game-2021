@@ -23,6 +23,7 @@ class bullet(sprite):
                     repr(obj)
                     self.kill()
 
+
 class tracking_bullet(bullet):
     def update_move(self, game):
         self.update_tracking(game)
@@ -32,7 +33,7 @@ class tracking_bullet(bullet):
 
 class standard(bullet):
     def __init__(self, pos, radius, speed, angle, collider=""):
-        self.name = "BULLET"
+        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]
@@ -72,7 +73,7 @@ class standard(bullet):
 
 class prox(tracking_bullet):
     def __init__(self, pos, radius, speed, target=None, target_prox=1, collider=""):
-        self.name = "BULLET"
+        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]
