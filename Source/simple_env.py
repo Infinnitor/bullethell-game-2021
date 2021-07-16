@@ -83,7 +83,7 @@ while game.run:
             iter = len(morph.shapes) - 1
 
     if morph.morphing is False:
-        morph.init_morph(iter, frames=10)
+        morph.init_morph(iter, frames=20)
 
     # if game.check_key(pygame.K_LEFT):
     #     morph.init_morph(0, frames=10)

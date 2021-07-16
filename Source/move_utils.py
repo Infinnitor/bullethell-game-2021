@@ -125,22 +125,8 @@ class morph():
 
     def init_morph_calc(self):
 
-        self.sorted_points = []
-        morph2 = copy.copy(self.morph2)
-
-        for iter, p1 in enumerate(self.morph1):
-
-            points_dist = []
-            for p2 in morph2:
-                points_dist.append(math.dist(p1, p2))
-
-            for i, dist in enumerate(points_dist):
-                if dist == min(points_dist):
-                    self.sorted_points.append(morph2.pop(i))
-                    break
-
         self.sorted_points_mv = []
-        for a, b in zip(self.morph1, self.sorted_points):
+        for a, b in zip(self.morph1, self.morph2):
             x_d = b[0] - a[0]
             y_d = b[1] - a[1]
 
