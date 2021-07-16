@@ -120,7 +120,6 @@ class prox(tracking_bullet):
             self.xmove = math.cos(a)
             self.ymove = math.sin(a)
 
-
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
         self.update_highlight(game)
@@ -183,7 +182,6 @@ class homing(tracking_bullet):
 
             self.xmove = math.cos(math.radians(self.angle))
             self.ymove = math.sin(math.radians(self.angle))
-
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
