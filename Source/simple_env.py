@@ -63,9 +63,10 @@ dm2 = [
     [400, 300]
 ]
 
+ln_colours = [colours.rand() for i in range(len(sq1))]
+
 morph = mv_u.polygon_morph(sq1, sq2, tr1, tr2, dm1, dm2)
 morph.init_morph(1, frames=20)
-ln = 2
 iter = 0
 
 while game.run:
@@ -96,8 +97,9 @@ while game.run:
     pygame.draw.polygon(game.win, colours.blue, morph.shapes[iter - 1])
     pygame.draw.polygon(game.win, colours.red, morph.get())
 
-    for l1, l2 in zip(morph.morph1, morph.sorted_points):
-        pygame.draw.line(game.win, colours.green, l1, l2, ln)
+    for i, lines, in enumerate(zip(morph.morph1, morph.sorted_points)):
+        if i % 2 != 0:
+            pygame.draw.line(game.win, ln_colours[i], lines[0], lines[1], 2)
 
     game.update_scaled()
     game.update_state()
