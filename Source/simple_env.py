@@ -97,7 +97,7 @@ while game.run:
     # pygame.draw.polygon(game.win, colours.blue, morph.shapes[iter - 1])
     # pygame.draw.polygon(game.win, colours.red, morph.get())
 
-    draw_u.corrected_polygon(game.win, colours.red, morph.get(), game)
+    pygame.draw.polygon(game.win, colours.red, morph.get())
 
     # for i, lines, in enumerate(zip(morph.morph1, morph.sorted_points)):
     #     if i % 2 != 0:

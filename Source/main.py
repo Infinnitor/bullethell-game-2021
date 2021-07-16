@@ -134,7 +134,7 @@ class player_class(sprite):
                 if self.rounding_r > self.side//self.defaults.focus_reduce:
                     self.rounding_r -= 1
 
-            draw_u.rounded_rect(self.mysurface, self.c, surf_rect, self.rounding_r)
+            pygame.draw.rect(self.mysurface, self.c, surf_rect, 0, self.rounding_r)
 
         else:
             self.rounding_r = 0
@@ -173,8 +173,8 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=colours.red,
                 framecap=60,
                 show_framerate=False,
