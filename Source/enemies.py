@@ -1,11 +1,14 @@
 from sprite_class import sprite
-from pygame import draw
-import random
+
+import move_utils as mv_u
+from move_utils import random, math
+
 import draw_utils as draw_u
+from draw_utils import draw
 
 
 class enemy_class(sprite):
-    def __init__(self, pos, radius, sprites=None):
+    def __init__(self, pos, radius):
         self.layer = "ENEMY"
 
         self.x = pos[0]
@@ -13,7 +16,6 @@ class enemy_class(sprite):
         self.r = radius
 
         self.colour = (50, 50, 50)
-        self.sprites = sprites
 
         self.up = random.choice((True, False))
 
@@ -30,13 +32,7 @@ class enemy_class(sprite):
     def update_draw(self, game):
         self.colour = draw_u.rgb.compliment(game.bg)
 
-        if self.sprites is not None:
-            a_dest = self.center_image_pos(self.sprites, (self.x, self.y))
-
-            game.win.blit(self.sprites, a_dest)
-
-        else:
-            draw.circle(game.win, self.colour, (self.x, self.y), self.r)
+        draw.circle(game.win, self.colour, (self.x, self.y), self.r)
 
         self.update_highlight(game)
 
@@ -45,8 +41,28 @@ class enemy_class(sprite):
 
 
 class enemy_explosion(sprite):
-    def __init__(self, pos, speed):
+    def __init__(self, pos, radius, speed, colour):
         self.layer = "BACKGROUND"
 
         self.x = pos[0]
         self.y = pos[1]
+        self.r = radius
+
+        self.speed = speed
+        self.c = colour
+
+    def update_move(self, game):
+        self.r += self.speed
+
+        windown_corners = [
+            (0, 0),
+            (game.win_w, 0),
+            (0, game.win_h),
+            (game.win_w, game.win_h)
+        ]
+
+        for pos in windown_corners:
+            pass
+
+    def update_draw(self, game):
+        draw.circle(game.win, self.c, (self.x, self.y), self.r)
