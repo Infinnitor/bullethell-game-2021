@@ -20,7 +20,7 @@ class bullet(sprite):
         if self.collider != "":
             for obj in game.sprites[self.collider]:
                 if mv_u.circle_collide(self, obj):
-                    repr(obj)
+                    obj.flash(game)
                     self.kill()
 
 

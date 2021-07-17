@@ -36,8 +36,9 @@ class enemy_class(sprite):
 
         self.update_highlight(game)
 
-    def flash(self):
+    def flash(self, game):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
+        game.add_sprite(enemy_explosion(pos=(self.x, self.y), radius=self.r, speed=10, colour=self.colour))
 
 
 class enemy_explosion(sprite):
@@ -61,8 +62,14 @@ class enemy_explosion(sprite):
             (game.win_w, game.win_h)
         ]
 
+        check = 0
         for pos in windown_corners:
-            pass
+            if math.dist((self.x, self.y), pos) < self.r:
+                check += 1
+
+        if check == 4:
+            game.bg = self.c
+            self.kill()
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
