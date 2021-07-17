@@ -216,6 +216,4 @@ class offset_polygon(offset, morph):
         for x, y in self.polygon:
             ret_polygon.append([x + self.x, y + self.y])
 
-        print(ret_polygon)
-
         return ret_polygon
