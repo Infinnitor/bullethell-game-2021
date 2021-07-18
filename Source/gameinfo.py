@@ -264,7 +264,18 @@ class game_info():
 
         self.mouse_pos = (m[0] * w_ratio, m[1] * h_ratio)
 
+    def bg_kill(self, obj):
+        for iter, s in enumerate(self.sprites["BACKGROUND"]):
+            if s is obj:
+                for d in self.sprites["BACKGROUND"][0:iter]:
+                    d.kill()
+
+        self.bg = obj.c
+        obj.kill()
+
     def update_draw(self):
+
+        print(len(self.sprites["BACKGROUND"]))
 
         def update_move_col(col):
             valid_sprites = []

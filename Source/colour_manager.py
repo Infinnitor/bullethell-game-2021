@@ -51,8 +51,36 @@ class colour_list():
             c.blue
         )
 
+        c.switch_iter = 0
+        c.switch_list = (
+            (155, 35, 35),
+            (155, 35, 90),
+            (155, 35, 150),
+            (115, 35, 155),
+            (55, 35, 155),
+            (35, 80, 155),
+            (35, 120, 155),
+            (35, 155, 130),
+            (35, 155, 75),
+            (45, 155, 35),
+            (120, 155, 35),
+            (155, 135, 35),
+            (155, 90, 35),
+            (155, 50, 35)
+        )
+
     def rand(c):
         return random.choice(c.full_list)
+
+    def switch(c):
+        c.switch_iter += 1
+        try:
+            switch_colour = c.switch_list[c.switch_iter]
+        except IndexError:
+            c.switch_iter = 0
+            switch_colour = c.switch_list[c.switch_iter]
+
+        return switch_colour
 
 
 colours = colour_list()

@@ -99,7 +99,7 @@ class prox(tracking_bullet):
     def update_bullet(self, game):
 
         if mv_u.circle_collide(self, self.target):
-            self.target.flash()
+            self.target.flash(game)
             self.kill()
 
         if self.onscreen(game):
@@ -157,7 +157,7 @@ class homing(tracking_bullet):
     def update_bullet(self, game):
 
         if mv_u.circle_collide(self, self.target):
-            self.target.flash()
+            self.target.flash(game)
             self.kill()
 
         if self.onscreen(game):
