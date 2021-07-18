@@ -41,7 +41,7 @@ class enemy_class(sprite):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
         o = (random.randint(0, game.win_w), random.randint(0, game.win_h))
         # o = (self.x, self.y)
-        game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=4, colour=colours.switch()))
+        game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=2, colour=colours.switch()))
 
 
 class enemy_explosion(sprite):
@@ -57,6 +57,7 @@ class enemy_explosion(sprite):
 
     def update_move(self, game):
         self.r += self.speed
+        self.speed += 0.01
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
@@ -74,7 +75,4 @@ class enemy_explosion(sprite):
                 check += 1
 
         if check == 4:
-            # self.kill()
-            # game.bg = self.c
-
             game.bg_kill(self)
