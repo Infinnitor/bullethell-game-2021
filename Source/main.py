@@ -72,13 +72,17 @@ class player_class(sprite):
         if game.check_key(pygame.K_RIGHT, pygame.K_d):
             self.x += self.speed
             self.moving = True
+        if not self.onscreen(game):
+            self.x = oldx
+
         if game.check_key(pygame.K_UP, pygame.K_w):
             self.y -= self.speed
             self.moving = True
         if game.check_key(pygame.K_DOWN, pygame.K_s):
             self.y += self.speed
             self.moving = True
-
+        if not self.onscreen(game):
+            self.y = oldy
         onscreen_status = self.onscreen_info(game)
         if onscreen_status == "X":
             self.x = oldx
