@@ -92,7 +92,6 @@ while game.run:
 
     # pygame.draw.polygon(game.win, colours.red, morph.get())
     m = morph.get(game.mouse_pos)
-    print(m)
     pygame.draw.polygon(game.win, colours.fullcyan, m)
 
     for i, lines, in enumerate(zip(morph.morph1, morph.morph2)):

@@ -85,7 +85,7 @@ class player_class(sprite):
         elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
+        if game.check_key(pygame.K_SPACE, pygame.K_z, buffer=True):
             game.add_sprite(bullets.standard(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
@@ -173,8 +173,8 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=colours.red,
                 framecap=60,
                 show_framerate=False,

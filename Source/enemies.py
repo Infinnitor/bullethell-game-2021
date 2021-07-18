@@ -6,6 +6,8 @@ from move_utils import random, math
 import draw_utils as draw_u
 from draw_utils import draw
 
+from colour_manager import colours
+
 
 class enemy_class(sprite):
     def __init__(self, pos, radius):
@@ -15,7 +17,7 @@ class enemy_class(sprite):
         self.y = pos[1]
         self.r = radius
 
-        self.colour = (50, 50, 50)
+        self.c = (255, 255, 255)
 
         self.up = random.choice((True, False))
 
@@ -30,15 +32,14 @@ class enemy_class(sprite):
             self.y += 4
 
     def update_draw(self, game):
-        self.colour = draw_u.rgb.compliment(game.bg)
 
-        draw.circle(game.win, self.colour, (self.x, self.y), self.r)
+        draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
         self.update_highlight(game)
 
     def flash(self, game):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-        game.add_sprite(enemy_explosion(pos=(self.x, self.y), radius=self.r, speed=10, colour=self.colour))
+        game.add_sprite(enemy_explosion(pos=(self.x, self.y), radius=self.r, speed=4, colour=colours.rand()))
 
 
 class enemy_explosion(sprite):
@@ -68,8 +69,9 @@ class enemy_explosion(sprite):
                 check += 1
 
         if check == 4:
+            if game.bg == self.c:
+                self.kill()
             game.bg = self.c
-            self.kill()
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
