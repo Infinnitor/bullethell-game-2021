@@ -40,6 +40,7 @@ class enemy_class(sprite):
     def flash(self, game):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
         o = (random.randint(0, game.win_w), random.randint(0, game.win_h))
+        # o = (self.x, self.y)
         game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=4, colour=colours.switch()))
 
 

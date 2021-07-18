@@ -1,4 +1,5 @@
 import random
+import draw_utils as draw_u
 
 class colour_list():
     def __init__(c):
@@ -51,8 +52,7 @@ class colour_list():
             c.blue
         )
 
-        c.switch_iter = 0
-        c.switch_list = (
+        switch_t = (
             (155, 35, 35),
             (155, 35, 90),
             (155, 35, 150),
@@ -68,6 +68,21 @@ class colour_list():
             (155, 90, 35),
             (155, 50, 35)
         )
+
+        c.switch_list = []
+        for i in range(len(switch_t)):
+            base_c = switch_t[i]
+            try:
+                next_c = switch_t[i + 1]
+            except IndexError:
+                next_c = switch_t[0]
+
+            c.switch_list.append(base_c)
+
+            for l in range(25, 100, 25):
+                c.switch_list.append(draw_u.rgb.lerp(base_c, next_c, l))
+
+        c.switch_iter = random.randint(0, len(c.switch_list) - 1)
 
     def rand(c):
         return random.choice(c.full_list)

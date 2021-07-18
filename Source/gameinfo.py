@@ -275,8 +275,6 @@ class game_info():
 
     def update_draw(self):
 
-        print(len(self.sprites["BACKGROUND"]))
-
         def update_move_col(col):
             valid_sprites = []
             for s_move in self.sprites[col]:

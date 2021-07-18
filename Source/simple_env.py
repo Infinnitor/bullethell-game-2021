@@ -63,6 +63,8 @@ dm2 = [
     [400, 300]
 ]
 
+lerp = draw_u.rgb.lerp_obj(colours.red, colours.blue, 1)
+
 # morph = mv_u.polygon(sq1, sq2, tr1, tr2, dm1, dm2)
 morph = mv_u.offset_polygon(sq1, sq2, tr1, tr2, dm1, dm2, offset=(0, 0))
 iter = 0
@@ -92,10 +94,10 @@ while game.run:
 
     # pygame.draw.polygon(game.win, colours.red, morph.get())
     m = morph.get(game.mouse_pos)
-    pygame.draw.polygon(game.win, colours.fullcyan, m)
+    pygame.draw.polygon(game.win, lerp.get(), m)
 
-    for i, lines, in enumerate(zip(morph.morph1, morph.morph2)):
-        pygame.draw.line(game.win, colours.green, lines[0], lines[1], 2)
+    # for i, lines, in enumerate(zip(morph.morph1, morph.morph2)):
+    #     pygame.draw.line(game.win, colours.green, lines[0], lines[1], 2)
 
     game.update_scaled()
     game.update_state()
