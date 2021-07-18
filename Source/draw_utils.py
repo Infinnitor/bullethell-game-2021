@@ -32,6 +32,34 @@ class rgb():
         final_colour = [c + random.randint(lower, upper) for c in colour]
         return rgb.fix(final_colour)
 
+    def lerp(c1, c2, point):
+        dist_rgb = [c2[i] - c1[i] for i in range(3)]
+
+        return tuple([c1[i] + (dist_rgb[i] * (point / 100)) for i in range(3)])
+
+    class lerp_obj():
+        def __init__(self, c1, c2, step=1):
+            self.c1 = c1
+            self.c2 = c2
+
+            self.iter = 0
+            self.step = step
+
+        def get(self):
+            self.iter += self.step
+
+            if self.iter <= 100:
+                return rgb.lerp(self.c1, self.c2, self.iter)
+            else:
+                self.iter = 0
+                c1 = self.c1
+                c2 = self.c2
+
+                self.c1 = c2
+                self.c2 = c1
+
+            return rgb.lerp(self.c1, self.c2, self.iter)
+
 
 def rounded_rect(surface, colour, rect, r):
 
