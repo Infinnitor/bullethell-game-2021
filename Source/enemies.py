@@ -39,11 +39,11 @@ class enemy_class(sprite):
 
     def flash(self, game):
         self.colour = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-        game.add_sprite(enemy_explosion(pos=(self.x, self.y), radius=self.r, speed=4, colour=colours.rand()))
+        game.add_sprite(enemy_explosion(pos=(self.x, self.y), radius=self.r, speed=4, colour=colours.rand(), game=game))
 
 
 class enemy_explosion(sprite):
-    def __init__(self, pos, radius, speed, colour):
+    def __init__(self, pos, radius, speed, colour, game):
         self.layer = "BACKGROUND"
 
         self.x = pos[0]
@@ -53,25 +53,31 @@ class enemy_explosion(sprite):
         self.speed = speed
         self.c = colour
 
+        # self.dist_from = max((
+        #                         math.dist((self.x, self.y), (0, game.win_h//2)),
+        #                         math.dist((self.x, self.y), (game.win_w, game.win_h//2))
+        #                     ))
+
     def update_move(self, game):
         self.r += self.speed
 
-        windown_corners = [
-            (0, 0),
-            (game.win_w, 0),
-            (0, game.win_h),
-            (game.win_w, game.win_h)
-        ]
+        if self.r > game.win_w//2:
+            window_corners = [
+                (0, 0),
+                (game.win_w, 0),
+                (0, game.win_h),
+                (game.win_w, game.win_h)
+            ]
 
-        check = 0
-        for pos in windown_corners:
-            if math.dist((self.x, self.y), pos) < self.r:
-                check += 1
+            check = 0
+            for pos in window_corners:
+                if math.dist((self.x, self.y), pos) < self.r:
+                    check += 1
 
-        if check == 4:
-            if game.bg == self.c:
-                self.kill()
-            game.bg = self.c
+            if check == 4:
+                if game.bg == self.c:
+                    self.kill()
+                game.bg = self.c
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
