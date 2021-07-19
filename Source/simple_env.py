@@ -71,7 +71,7 @@ dm1 = mv_u.polygon.anchor(p, (300, 300))
 lerp = draw_u.rgb.lerp_obj(colours.red, colours.blue, 1)
 
 # morph = mv_u.morphpolygon(sq1, sq2, tr1, tr2, dm1, dm2)
-morph = mv_u.offset_morphpolygon(sq1, sq2, tr1, tr2, dm1, offset=(0, 0))
+morph = mv_u.offset_morphpolygon(sq1, sq2, tr1, tr2, dm1, offset=(0, 0), shift=True)
 iter = 0
 
 while game.run:

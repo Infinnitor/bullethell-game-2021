@@ -137,9 +137,13 @@ class polygon():
 
 class morph():
 
-    def log_shapes(self, shapes):
-        self.shapes = shapes
+    def log_shapes(self, shapes, shift=False):
+        self.shapes = list(shapes)
         assert sum([len(s) for s in self.shapes]) == max([len(s) for s in self.shapes]) * len(self.shapes), "All shapes must have an equal amount of points"
+
+        if shift is True:
+            for shift in range(len(self.shapes)):
+                self.shapes[shift] = polygon.shift_points(self.shapes[shift], 0)
 
         self.polygon = self.shapes[0]
 
@@ -191,8 +195,8 @@ class morph():
 
 class morphpolygon(morph):
 
-    def __init__(self, *shapes):
-        self.log_shapes(shapes)
+    def __init__(self, *shapes, shift=False):
+        self.log_shapes(shapes, shift)
 
     def get(self):
         if self.iter < 100:
@@ -208,14 +212,14 @@ class morphpolygon(morph):
 
 
 class offset_morphpolygon(offset, morph):
-    def __init__(self, *shapes, offset, parent=None):
+    def __init__(self, *shapes, offset, parent=None, shift=False):
 
         self.offset_x = offset[0]
         self.offset_y = offset[1]
 
         self.parent = parent
 
-        self.log_shapes(shapes)
+        self.log_shapes(shapes, shift)
 
     def get(self, pos=(0, 0)):
         if self.iter < 100:
