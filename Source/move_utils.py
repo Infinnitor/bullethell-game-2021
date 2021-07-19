@@ -3,15 +3,14 @@ import random
 
 
 def circle_collide(p, q, add=[], attr=True):
-    if attr:
-        if math.dist((p.x, p.y), (q.x, q.y)) < p.r + q.r + sum(add):
-            return True
-        return False
 
-    else:
-        if math.dist((p[0], p[1]), (q[0], q[1])) < p[2] + q[2] + sum(add):
-            return True
-        return False
+    if attr:
+        p = (p.x, p.y, p.r)
+        q = (q.x, q.y, q.r)
+
+    if math.dist((p[0], p[1]), (q[0], q[1])) < p[2] + q[2] + sum(add):
+        return True
+    return False
 
 
 def midpoint(p, q, attr=True, rounding=False):
