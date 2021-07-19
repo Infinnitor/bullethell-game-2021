@@ -46,18 +46,24 @@ class player_class(sprite):
                         [(0, 0), (self.side, 0), (self.side, self.side), (self.side//2, self.side), (0, self.side)],
                         (self.side//2, self.side//2))
 
+        hit_r = self.r * 1.25
         hitbox_shape = mv_u.anchor_polygon(
-                        [(self.r, 0), (self.r * 2, self.r), (self.r, self.r * 2), (self.r, self.r * 2), (0, self.r)],
-                        (self.r, self.r))
+                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r), (hit_r, hit_r * 2), (0, hit_r)],
+                        (hit_r, hit_r))
+
+        hitbox_shoot = mv_u.anchor_polygon(
+                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r * 1.5), (hit_r, hit_r * 2), (0, hit_r * 1.5)],
+                        (hit_r, hit_r))
 
         shooting_shape = mv_u.anchor_polygon(
-                        [(self.side//2, 0), (self.side//2, 0), (self.side, self.side), (self.side//2, self.side - self.r), (0, self.side)],
+                        [(self.side//2, 0), (self.side//2, 0), (self.side, self.side - self.r), (self.side//2, self.side), (0, self.side - self.r)],
                         (self.side//2, self.side//2))
 
         self.morph = mv_u.offset_morphpolygon(
                                 square_shape,
                                 hitbox_shape,
                                 shooting_shape,
+                                hitbox_shoot,
                                 offset=(0, 0),
                                 parent=self)
 
@@ -67,7 +73,12 @@ class player_class(sprite):
             self.focus = True
             self.speed = self.defaults.focus_speed
 
-            self.morph.init_morph(1, frames=10)
+            if game.check_key(pygame.K_z, pygame.K_x):
+                self.morph.init_morph(3, frames=10)
+
+            else:
+                self.morph.init_morph(1, frames=10)
+
         else:
             self.focus = False
             self.speed = self.defaults.speed
@@ -194,8 +205,8 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=colours.switch(),
                 framecap=60,
                 show_framerate=False,
