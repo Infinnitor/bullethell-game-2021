@@ -155,7 +155,7 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 90, colours.white))
+    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 50, colours.white))
 
     while game.run:
 

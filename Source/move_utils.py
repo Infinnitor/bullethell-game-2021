@@ -52,6 +52,15 @@ def midpoint(p, q, attr=True, rounding=False):
     return ret
 
 
+# class shape():
+#     def center_square(pos, side):
+#         s = side/2
+#         return (pos[0] - s, pos[1] - s, pos[0] + s, pos[1] + s)
+#
+#     def center_triangle(pos, d):
+#         return (pos[0], )
+
+
 class offset():
     def update_pos(self, pos=(0, 0)):
         if self.parent is not None:

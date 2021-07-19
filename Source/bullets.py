@@ -23,7 +23,7 @@ class bullet(sprite):
     def update_collisions(self, game):
         if self.collider_type != "":
             for obj in game.sprites[self.collider_type]:
-                if mv_u.circle_collide(self, obj):
+                if obj.collide(self):
                     # obj.flash(game)
                     self.hit_target(game)
 
@@ -76,10 +76,6 @@ class standard(bullet):
 
     def update_draw(self, game):
 
-        # if self.destroying:
-        #     draw.circle(game.win, self.c, (self.x, self.y), self.r)
-        #     return
-
         diamond = (
             (self.x, self.y - self.r*2),
             (self.x - self.r, self.y),
@@ -88,6 +84,7 @@ class standard(bullet):
         )
 
         draw.polygon(game.win, self.c, diamond)
+        # draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
 
 class prox(tracking_bullet):

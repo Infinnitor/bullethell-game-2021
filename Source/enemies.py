@@ -36,6 +36,9 @@ class enemy(sprite):
 
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
+    def collide(self, collider):
+        pass
+
     def flash(self, game):
         o = (self.x, self.y)
         game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
@@ -50,8 +53,8 @@ class angel(enemy):
 
         self.c = colour
 
-        r = self.r * 1
-        q = self.r * 0.4
+        r = self.r * 2
+        q = r * 0.3
 
         star_shape = [
             (r, 0),
@@ -78,7 +81,14 @@ class angel(enemy):
             self.morph.init_morph(self.iter, 30)
 
     def update_draw(self, game):
-        draw.polygon(game.win, self.c, self.morph.get())
+        polygon = self.morph.get()
+        draw.polygon(game.win, self.c, polygon)
+
+        draw.circle(game.win, colours.red, (self.x, self.y), self.r)
+
+    def collide(self, collider):
+        if mv_u.circle_collide(self, collider):
+            return True
 
 
 class enemy_explosion(sprite):
