@@ -42,7 +42,19 @@ class player_class(sprite):
         # Defaults for player
         self.defaults = self.player_defaults(self)
 
-        # self.morph = mv_u.offset_polygon()
+        square_shape = mv_u.anchor_polygon(
+                        [(0, 0), (self.side, 0), (self.side, self.side), (0, self.side)],
+                        (self.r * 2, self.r * 2))
+
+        hitbox_shape = mv_u.anchor_polygon(
+                        [(self.r, 0), (self.r * 2, self.r), (self.r, self.r * 2), (0, self.r)],
+                        (self.r, self.r))
+
+        self.morph = mv_u.offset_polygon(
+                                square_shape,
+                                hitbox_shape,
+                                offset=(0, 0),
+                                parent=self)
 
     def update_move(self, game):
 

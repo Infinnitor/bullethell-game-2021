@@ -70,7 +70,7 @@ class enemy_explosion(sprite):
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
-        if self.r > self.target_r:
+        if self.r > self.target_r and game.frames % 10 == 0:
 
             check = 0
             for pos in self.window_corners:

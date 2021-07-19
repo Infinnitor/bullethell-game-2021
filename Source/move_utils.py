@@ -119,7 +119,7 @@ class sine_bob():
 
 
 def anchor_polygon(points, anchor):
-        return [(x - anchor[0], y - anchor[1]) for x, y in points]
+    return [(x - anchor[0], y - anchor[1]) for x, y in points]
 
 
 class morph():
