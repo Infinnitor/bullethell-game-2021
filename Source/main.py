@@ -31,8 +31,6 @@ class player_class(sprite):
         self.r = radius
         self.side = self.r * 4
 
-        self.mysurface = pygame.Surface((self.side, self.side))
-
         self.speed = speed
 
         self.c = colours.fullblack
@@ -51,19 +49,17 @@ class player_class(sprite):
                         [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r), (hit_r, hit_r * 2), (0, hit_r)],
                         (hit_r, hit_r))
 
-        hitbox_shoot = mv_u.polygon.anchor(
-                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r * 1.75), (hit_r, hit_r * 2), (0, hit_r * 1.75)],
-                        (hit_r, hit_r))
-
         shooting_shape = mv_u.polygon.anchor(
                         [(self.side//2, 0), (self.side//2, 0), (self.side, self.side - self.r), (self.side//2, self.side), (0, self.side - self.r)],
                         (self.side//2, self.side//2))
 
+        hitbox_shoot = mv_u.polygon.anchor(
+                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r * 1.75), (hit_r, hit_r * 2), (0, hit_r * 1.75)],
+                        (hit_r, hit_r))
+
+        self.polygons = [square_shape, hitbox_shape, shooting_shape, hitbox_shoot]
         self.morph = mv_u.offset_morphpolygon(
-                                square_shape,
-                                hitbox_shape,
-                                shooting_shape,
-                                hitbox_shoot,
+                                *self.polygons,
                                 offset=(0, 0),
                                 parent=self)
 
@@ -110,11 +106,6 @@ class player_class(sprite):
             self.moving = True
         if not self.onscreen(game):
             self.y = oldy
-        onscreen_status = self.onscreen_info(game)
-        if onscreen_status == "X":
-            self.x = oldx
-        elif onscreen_status == "Y":
-            self.y = oldy
 
         if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
             game.add_sprite(bullets.standard(
@@ -125,7 +116,9 @@ class player_class(sprite):
                                     collider="ENEMY"))
 
         if game.check_key(pygame.K_x, timebuffer=7):
-            t = game.sprites["ENEMY"][0]
+            t = None
+            if game.sprites["ENEMY"]:
+                t = game.sprites["ENEMY"][0]
             game.add_sprite(bullets.prox(
                                         pos=self.bullet_offset.get_pos(),
                                         radius=self.r * 0.75,
@@ -135,7 +128,9 @@ class player_class(sprite):
                                         collider="ENEMY"))
 
         if game.check_key(pygame.K_c, timebuffer=7):
-            t = game.sprites["ENEMY"][0]
+            t = None
+            if game.sprites["ENEMY"]:
+                t = game.sprites["ENEMY"][0]
             game.add_sprite(bullets.homing(
                                         pos=self.bullet_offset.get_pos(),
                                         radius=self.r * 0.75,
@@ -147,35 +142,8 @@ class player_class(sprite):
                                         collider="ENEMY"))
 
     def update_draw(self, game):
-
-        # self.mysurface.fill(colours.colourkey)
-        # self.mysurface.set_colorkey(colours.colourkey)
-        #
-        # surf_rect = (
-        #     self.r*2 - self.side//2,
-        #     self.r*2 - self.side//2,
-        #     self.side,
-        #     self.side)
-
-        # if self.side < self.defaults.focus_size:
-        #     if self.focus:
-        #         if self.rounding_r < self.side//self.defaults.focus_reduce:
-        #             self.rounding_r += 1
-        #     else:
-        #         if self.rounding_r > self.side//self.defaults.focus_reduce:
-        #             self.rounding_r -= 1
-        #
-        #     pygame.draw.rect(self.mysurface, self.c, surf_rect, 0, self.rounding_r)
-        #
-        # else:
-        #     self.rounding_r = 0
-        #     pygame.draw.rect(self.mysurface, self.c, surf_rect)
-
-        # game.win.blit(self.mysurface, (self.x - self.r * 2, self.y - self.r * 2))
         pygame.draw.polygon(game.win, self.c, self.morph.get())
         # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
-
-        self.update_highlight(game)
 
 
 def main_game(game):
@@ -187,8 +155,7 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-
-    game.add_sprite(enemies.enemy_class(pos=(500, 500), radius=50))
+    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 90, colours.white))
 
     while game.run:
 
