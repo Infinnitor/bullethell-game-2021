@@ -13,25 +13,6 @@ def circle_collide(p, q, add=[], attr=True):
     return False
 
 
-def midpoint(p, q, attr=True, rounding=False):
-    if attr:
-        ret = [(p.x + q.x) / 2, (p.y + q.y) / 2]
-    else:
-        ret = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]
-
-    if rounding:
-        ret = [round(r) for r in ret]
-    return ret
-
-
-def polygon_adjust(polygon, x=0, y=0):
-    new_polygon = []
-    for point in polygon:
-        new_polygon.append((point[0] + x, point[1] + y))
-
-    return new_polygon
-
-
 def rect_collide(a, b, attr=True):
 
     if attr:
@@ -58,6 +39,17 @@ def rect_collide(a, b, attr=True):
         return True
 
     return False
+
+
+def midpoint(p, q, attr=True, rounding=False):
+    if attr:
+        ret = [(p.x + q.x) / 2, (p.y + q.y) / 2]
+    else:
+        ret = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]
+
+    if rounding:
+        ret = [round(r) for r in ret]
+    return ret
 
 
 class offset():
@@ -132,6 +124,13 @@ class polygon():
 
     def anchor(points, anchor):
         return [(x - anchor[0], y - anchor[1]) for x, y in points]
+
+    def adjust(polygon, x=0, y=0):
+        new_polygon = []
+        for point in polygon:
+            new_polygon.append((point[0] + x, point[1] + y))
+
+        return new_polygon
 
 
 class morph():
