@@ -43,38 +43,40 @@ class player_class(sprite):
         self.defaults = self.player_defaults(self)
 
         square_shape = mv_u.anchor_polygon(
-                        [(0, 0), (self.side, 0), (self.side, self.side), (0, self.side)],
-                        (self.r * 2, self.r * 2))
+                        [(0, 0), (self.side, 0), (self.side, self.side), (self.side//2, self.side), (0, self.side)],
+                        (self.side//2, self.side//2))
 
         hitbox_shape = mv_u.anchor_polygon(
-                        [(self.r, 0), (self.r * 2, self.r), (self.r, self.r * 2), (0, self.r)],
+                        [(self.r, 0), (self.r * 2, self.r), (self.r, self.r * 2), (self.r, self.r * 2), (0, self.r)],
                         (self.r, self.r))
 
-        self.morph = mv_u.offset_polygon(
+        shooting_shape = mv_u.anchor_polygon(
+                        [(self.side//2, 0), (self.side//2, 0), (self.side, self.side), (self.side//2, self.side - self.r), (0, self.side)],
+                        (self.side//2, self.side//2))
+
+        self.morph = mv_u.offset_morphpolygon(
                                 square_shape,
                                 hitbox_shape,
+                                shooting_shape,
                                 offset=(0, 0),
                                 parent=self)
 
     def update_move(self, game):
 
-        self.focus = False
-
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             self.focus = True
             self.speed = self.defaults.focus_speed
 
-            if self.side > self.r:
-                self.side -= self.defaults.focus_reduce
-            else:
-                self.side = self.r
+            self.morph.init_morph(1, frames=10)
         else:
+            self.focus = False
             self.speed = self.defaults.speed
 
-            if self.side < self.defaults.focus_size:
-                self.side += self.defaults.focus_reduce
+            if game.check_key(pygame.K_z, pygame.K_x):
+                self.morph.init_morph(2, frames=5)
+
             else:
-                self.side = self.r * self.defaults.focus_reduce
+                self.morph.init_morph(0, frames=10)
 
         oldx = self.x
         oldy = self.y
@@ -103,7 +105,7 @@ class player_class(sprite):
         elif onscreen_status == "Y":
             self.y = oldy
 
-        if game.check_key(pygame.K_SPACE, pygame.K_z, buffer=True):
+        if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
             game.add_sprite(bullets.standard(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
@@ -135,31 +137,32 @@ class player_class(sprite):
 
     def update_draw(self, game):
 
-        self.mysurface.fill(colours.colourkey)
-        self.mysurface.set_colorkey(colours.colourkey)
+        # self.mysurface.fill(colours.colourkey)
+        # self.mysurface.set_colorkey(colours.colourkey)
+        #
+        # surf_rect = (
+        #     self.r*2 - self.side//2,
+        #     self.r*2 - self.side//2,
+        #     self.side,
+        #     self.side)
 
-        surf_rect = (
-            self.r*2 - self.side//2,
-            self.r*2 - self.side//2,
-            self.side,
-            self.side)
+        # if self.side < self.defaults.focus_size:
+        #     if self.focus:
+        #         if self.rounding_r < self.side//self.defaults.focus_reduce:
+        #             self.rounding_r += 1
+        #     else:
+        #         if self.rounding_r > self.side//self.defaults.focus_reduce:
+        #             self.rounding_r -= 1
+        #
+        #     pygame.draw.rect(self.mysurface, self.c, surf_rect, 0, self.rounding_r)
+        #
+        # else:
+        #     self.rounding_r = 0
+        #     pygame.draw.rect(self.mysurface, self.c, surf_rect)
 
-        if self.side < self.defaults.focus_size:
-            if self.focus:
-                if self.rounding_r < self.side//self.defaults.focus_reduce:
-                    self.rounding_r += 1
-            else:
-                if self.rounding_r > self.side//self.defaults.focus_reduce:
-                    self.rounding_r -= 1
-
-            pygame.draw.rect(self.mysurface, self.c, surf_rect, 0, self.rounding_r)
-
-        else:
-            self.rounding_r = 0
-            pygame.draw.rect(self.mysurface, self.c, surf_rect)
-
-        game.win.blit(self.mysurface, (self.x - self.r * 2, self.y - self.r * 2))
-        pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
+        # game.win.blit(self.mysurface, (self.x - self.r * 2, self.y - self.r * 2))
+        pygame.draw.polygon(game.win, self.c, self.morph.get())
+        # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
         self.update_highlight(game)
 
