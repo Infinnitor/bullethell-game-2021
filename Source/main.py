@@ -42,20 +42,20 @@ class player_class(sprite):
         # Defaults for player
         self.defaults = self.player_defaults(self)
 
-        square_shape = mv_u.anchor_polygon(
+        square_shape = mv_u.polygon.anchor(
                         [(0, 0), (self.side, 0), (self.side, self.side), (self.side//2, self.side), (0, self.side)],
                         (self.side//2, self.side//2))
 
         hit_r = self.r * 1.25
-        hitbox_shape = mv_u.anchor_polygon(
+        hitbox_shape = mv_u.polygon.anchor(
                         [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r), (hit_r, hit_r * 2), (0, hit_r)],
                         (hit_r, hit_r))
 
-        hitbox_shoot = mv_u.anchor_polygon(
-                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r * 1.5), (hit_r, hit_r * 2), (0, hit_r * 1.5)],
+        hitbox_shoot = mv_u.polygon.anchor(
+                        [(hit_r, 0), (hit_r, 0), (hit_r * 2, hit_r * 1.75), (hit_r, hit_r * 2), (0, hit_r * 1.75)],
                         (hit_r, hit_r))
 
-        shooting_shape = mv_u.anchor_polygon(
+        shooting_shape = mv_u.polygon.anchor(
                         [(self.side//2, 0), (self.side//2, 0), (self.side, self.side - self.r), (self.side//2, self.side), (0, self.side - self.r)],
                         (self.side//2, self.side//2))
 

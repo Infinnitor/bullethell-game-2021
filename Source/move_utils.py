@@ -118,8 +118,21 @@ class sine_bob():
             return 0
 
 
-def anchor_polygon(points, anchor):
-    return [(x - anchor[0], y - anchor[1]) for x, y in points]
+class polygon():
+    def shift_points(points, shift=0):
+
+        shifted_p = [i for i in points]
+
+        if shift == 0:
+            shift = random.randint(1, len(points) - 1)
+
+        for s in range(shift):
+            shifted_p.insert(0, shifted_p.pop(-1))
+
+        return shifted_p
+
+    def anchor(points, anchor):
+        return [(x - anchor[0], y - anchor[1]) for x, y in points]
 
 
 class morph():

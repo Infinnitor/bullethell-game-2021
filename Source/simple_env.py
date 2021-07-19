@@ -28,7 +28,7 @@ p = [
     [-50, 50],
 ]
 
-sq1 = mv_u.anchor_polygon(p, (0, 0))
+sq1 = mv_u.polygon.anchor(p, (0, 0))
 
 
 p = [
@@ -38,7 +38,7 @@ p = [
     [0, 200],
 ]
 
-sq2 = mv_u.anchor_polygon(p, (100, 100))
+sq2 = mv_u.polygon.anchor(p, (100, 100))
 
 
 p = [
@@ -48,7 +48,7 @@ p = [
     [100, 200],
 ]
 
-tr1 = mv_u.anchor_polygon(p, (100, 100))
+tr1 = mv_u.polygon.anchor(p, (100, 100))
 
 p = [
     [100, 0],
@@ -57,7 +57,7 @@ p = [
     [0, 200],
 ]
 
-tr2 = mv_u.anchor_polygon(p, (100, 100))
+tr2 = mv_u.polygon.anchor(p, (100, 100))
 
 p = [
     [200, 300],
@@ -66,7 +66,7 @@ p = [
     [300, 400],
 ]
 
-dm1 = mv_u.anchor_polygon(p, (300, 300))
+dm1 = mv_u.polygon.anchor(p, (300, 300))
 
 lerp = draw_u.rgb.lerp_obj(colours.red, colours.blue, 1)
 
