@@ -17,8 +17,8 @@ class bullet(sprite):
         pass
 
     def update_collisions(self, game):
-        if self.collider != "":
-            for obj in game.sprites[self.collider]:
+        if self.collider_type != "":
+            for obj in game.sprites[self.collider_type]:
                 if mv_u.circle_collide(self, obj):
                     obj.flash(game)
                     self.kill()
@@ -46,7 +46,7 @@ class standard(bullet):
         self.xmove = math.cos(a)
         self.ymove = math.sin(a)
 
-        self.collider = collider
+        self.collider_type = collider
 
         self.c = colours.fullblack
 
@@ -68,7 +68,6 @@ class standard(bullet):
         )
 
         draw.polygon(game.win, self.c, triangle)
-        self.update_highlight(game)
 
 
 class prox(tracking_bullet):
@@ -94,13 +93,14 @@ class prox(tracking_bullet):
 
         self.c = colours.fullblack
 
-        self.collider = collider
+        self.collider_type = collider
 
     def update_bullet(self, game):
 
-        if mv_u.circle_collide(self, self.target):
-            self.target.flash(game)
-            self.kill()
+        if self.target is not None:
+            if mv_u.circle_collide(self, self.target):
+                self.target.flash(game)
+                self.kill()
 
         if self.onscreen(game):
             self.x += self.xmove * self.speed
@@ -109,8 +109,9 @@ class prox(tracking_bullet):
             self.destroy = True
 
     def update_tracking(self, game):
-        if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
-            self.target_update = False
+        if self.target is not None:
+            if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
+                self.target_update = False
 
         if self.target_update:
             a = -90
@@ -122,7 +123,6 @@ class prox(tracking_bullet):
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
-        self.update_highlight(game)
 
 
 # Work in progress
@@ -152,13 +152,14 @@ class homing(tracking_bullet):
 
         self.c = colours.fullblack
 
-        self.collider = collider
+        self.collider_type = collider
 
     def update_bullet(self, game):
 
-        if mv_u.circle_collide(self, self.target):
-            self.target.flash(game)
-            self.kill()
+        if self.target is not None:
+            if mv_u.circle_collide(self, self.target):
+                self.target.flash(game)
+                self.kill()
 
         if self.onscreen(game):
             self.x += self.xmove * self.speed
@@ -167,8 +168,9 @@ class homing(tracking_bullet):
             self.destroy = True
 
     def update_tracking(self, game):
-        if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
-            self.target_update = False
+        if self.target is not None:
+            if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
+                self.target_update = False
 
         if self.target_update:
             target_a = self.angle
@@ -185,4 +187,3 @@ class homing(tracking_bullet):
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
-        self.update_highlight(game)
