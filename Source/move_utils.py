@@ -62,15 +62,15 @@ def rect_collide(a, b, attr=True):
 
 
 class offset():
-    def update_pos(self, anchor=(0, 0)):
+    def update_pos(self, pos=(0, 0)):
         if self.parent is not None:
-            anchor = (self.parent.x, self.parent.y)
+            pos = (self.parent.x, self.parent.y)
 
-        self.x = anchor[0] + self.offset_x
-        self.y = anchor[1] + self.offset_y
+        self.x = pos[0] + self.offset_x
+        self.y = pos[1] + self.offset_y
 
-    def get_pos(self, anchor=(0, 0)):
-        self.update_pos(anchor)
+    def get_pos(self, pos=(0, 0)):
+        self.update_pos(pos)
 
         return [self.x, self.y]
 
@@ -118,6 +118,10 @@ class sine_bob():
             return 0
 
 
+def anchor_polygon(points, anchor):
+        return [(x - anchor[0], y - anchor[1]) for x, y in points]
+
+
 class morph():
 
     def log_shapes(self, shapes):
@@ -139,11 +143,11 @@ class morph():
         self.shapes.append(new_shape)
 
     def init_morph(self, target, frames):
+        if self.shapes[target] == self.polygon or target == self.target:
+            return
 
         self.morph1 = self.polygon
         self.morph2 = self.shapes[target]
-        if target == self.target:
-            return
 
         self.morphing = True
         self.target = target
@@ -172,7 +176,7 @@ class morph():
         self.polygon = morph_polygon
 
 
-class polygon(morph):
+class morphpolygon(morph):
 
     def __init__(self, *shapes):
         self.log_shapes(shapes)
@@ -190,7 +194,7 @@ class polygon(morph):
         return self.polygon
 
 
-class offset_polygon(offset, morph):
+class offset_morphpolygon(offset, morph):
     def __init__(self, *shapes, offset, parent=None):
 
         self.offset_x = offset[0]
@@ -200,14 +204,14 @@ class offset_polygon(offset, morph):
 
         self.log_shapes(shapes)
 
-    def get(self, anchor=(0, 0)):
+    def get(self, pos=(0, 0)):
         if self.iter < 100:
             self.iter += self.step
         else:
             self.iter = 100
             self.morphing = False
 
-        self.update_pos(anchor)
+        self.update_pos(pos)
 
         if self.morphing is True:
             self.morph()

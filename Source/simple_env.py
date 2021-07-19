@@ -21,52 +21,57 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
-sq1 = [
-    [0, 0],
-    [200, 0],
-    [200, 200],
-    [0, 200],
-]
-
-sq2 = [
+p = [
     [-50, -50],
     [50, -50],
     [50, 50],
     [-50, 50],
 ]
 
-tr1 = [
+sq1 = mv_u.anchor_polygon(p, (0, 0))
+
+
+p = [
     [0, 0],
+    [200, 0],
+    [200, 200],
     [0, 200],
-    [100, 0],
-    [100, 0],
 ]
 
-tr2 = [
+sq2 = mv_u.anchor_polygon(p, (100, 100))
+
+
+p = [
     [0, 0],
     [200, 0],
     [100, 200],
-    [100, 200]
+    [100, 200],
 ]
 
-dm1 = [
+tr1 = mv_u.anchor_polygon(p, (100, 100))
+
+p = [
+    [100, 0],
+    [100, 0],
+    [200, 200],
+    [0, 200],
+]
+
+tr2 = mv_u.anchor_polygon(p, (100, 100))
+
+p = [
+    [200, 300],
     [300, 200],
     [400, 300],
     [300, 400],
-    [200, 300]
 ]
 
-dm2 = [
-    [500, 200],
-    [600, 300],
-    [500, 400],
-    [400, 300]
-]
+dm1 = mv_u.anchor_polygon(p, (300, 300))
 
 lerp = draw_u.rgb.lerp_obj(colours.red, colours.blue, 1)
 
-# morph = mv_u.polygon(sq1, sq2, tr1, tr2, dm1, dm2)
-morph = mv_u.offset_polygon(sq1, sq2, tr1, tr2, dm1, dm2, offset=(0, 0))
+# morph = mv_u.morphpolygon(sq1, sq2, tr1, tr2, dm1, dm2)
+morph = mv_u.offset_morphpolygon(sq1, sq2, tr1, tr2, dm1, offset=(0, 0))
 iter = 0
 
 while game.run:
@@ -88,9 +93,9 @@ while game.run:
         start_morph = True
 
     if start_morph:
-        if morph.morphing is False:
-            morph.init_morph(iter, frames=20)
-            start_morph = False
+        # if morph.morphing is False:
+        morph.init_morph(iter, frames=20)
+        start_morph = False
 
     # pygame.draw.polygon(game.win, colours.red, morph.get())
     m = morph.get(game.mouse_pos)

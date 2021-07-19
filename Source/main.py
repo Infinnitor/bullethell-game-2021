@@ -42,6 +42,8 @@ class player_class(sprite):
         # Defaults for player
         self.defaults = self.player_defaults(self)
 
+        # self.morph = mv_u.offset_polygon()
+
     def update_move(self, game):
 
         self.focus = False
