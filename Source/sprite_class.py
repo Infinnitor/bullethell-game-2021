@@ -41,6 +41,7 @@ class sprite():
             traceback.print_exc()
 
         self.destroy = False
+        self.destroying = False
         self.highlight = 0
 
     def kill(self):

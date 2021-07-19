@@ -10,6 +10,10 @@ from colour_manager import colours
 
 class bullet(sprite):
     def update_move(self, game):
+        if self.destroying:
+            self.update_destroy(game)
+            return
+
         self.update_bullet(game)
         self.update_collisions(game)
 
@@ -20,20 +24,33 @@ class bullet(sprite):
         if self.collider_type != "":
             for obj in game.sprites[self.collider_type]:
                 if mv_u.circle_collide(self, obj):
-                    obj.flash(game)
-                    self.kill()
+                    # obj.flash(game)
+                    self.hit_target(game)
+
+    def update_destroy(self, game):
+        self.r -= 0.7
+        if self.r < 3:
+            self.kill()
+
+    def hit_target(self, game):
+        self.destroying = True
 
 
 class tracking_bullet(bullet):
     def update_move(self, game):
+        if self.destroying:
+            self.update_destroy(game)
+            return
+
         self.update_tracking(game)
         self.update_bullet(game)
         self.update_collisions(game)
 
 
 class standard(bullet):
+    layer = "BULLET"
+
     def __init__(self, pos, radius, speed, angle, collider=""):
-        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]
@@ -58,21 +75,25 @@ class standard(bullet):
             self.destroy = True
 
     def update_draw(self, game):
-        # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
-        triangle = (
+        # if self.destroying:
+        #     draw.circle(game.win, self.c, (self.x, self.y), self.r)
+        #     return
+
+        diamond = (
             (self.x, self.y - self.r*2),
             (self.x - self.r, self.y),
             (self.x, self.y + self.r*2),
             (self.x + self.r, self.y),
         )
 
-        draw.polygon(game.win, self.c, triangle)
+        draw.polygon(game.win, self.c, diamond)
 
 
 class prox(tracking_bullet):
+    layer = "BULLET"
+
     def __init__(self, pos, radius, speed, target=None, target_prox=1, collider=""):
-        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]
@@ -127,8 +148,9 @@ class prox(tracking_bullet):
 
 # Work in progress
 class homing(tracking_bullet):
+    layer = "BULLET"
+
     def __init__(self, pos, radius, speed, angle, target=None, target_prox=1, homing=1, collider=""):
-        self.layer = "BULLET"
 
         self.x = pos[0]
         self.y = pos[1]

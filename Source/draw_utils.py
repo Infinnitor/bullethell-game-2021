@@ -38,12 +38,14 @@ class rgb():
         return tuple([c1[i] + (dist_rgb[i] * (point / 100)) for i in range(3)])
 
     class lerp_obj():
-        def __init__(self, c1, c2, step=1):
+        def __init__(self, c1, c2, step=1, kill=True):
             self.c1 = c1
             self.c2 = c2
 
             self.iter = 0
             self.step = step
+
+            self.kill = kill
 
         def get(self):
             self.iter += self.step
@@ -51,6 +53,9 @@ class rgb():
             if self.iter <= 100:
                 return rgb.lerp(self.c1, self.c2, self.iter)
             else:
+                if self.kill:
+                    return None
+
                 self.iter = 0
                 c1 = self.c1
                 c2 = self.c2
