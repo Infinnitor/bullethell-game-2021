@@ -110,7 +110,7 @@ class sine_bob():
 
 
 class polygon():
-    def shift_points(points, shift=0):
+    def caesarian(points, shift=0):
 
         shifted_p = [i for i in points]
 
@@ -132,16 +132,37 @@ class polygon():
 
         return new_polygon
 
+    def rotate(points, anchor, rotation):
+        rotated_p = []
+        r_mod = math.radians(rotation)
+
+        for x, y in points:
+            adj = x - anchor[0]
+            opp = y - anchor[1]
+
+            hyp = math.sqrt(adj**2 + opp**2)
+
+            a = math.atan2(opp, adj)
+            a += r_mod
+
+            rotated_p.append([math.cos(a) * hyp, math.sin(a) * hyp])
+
+        return rotated_p
+
 
 class morph():
+
+    def __len__(self):
+        return len(self.shapes)
 
     def log_shapes(self, shapes, shift=False):
         self.shapes = list(shapes)
         assert sum([len(s) for s in self.shapes]) == max([len(s) for s in self.shapes]) * len(self.shapes), "All shapes must have an equal amount of points"
 
-        if shift is True:
-            for shift in range(len(self.shapes)):
-                self.shapes[shift] = polygon.shift_points(self.shapes[shift], 0)
+        if shift is not False:
+            for s in range(len(self.shapes)):
+                if s % 2 == 0:
+                    self.shapes[s] = polygon.caesarian(self.shapes[s], shift)
 
         self.polygon = self.shapes[0]
 
