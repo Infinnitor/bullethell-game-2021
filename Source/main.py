@@ -127,20 +127,6 @@ class player_class(sprite):
                                         target_prox=100,
                                         collider="ENEMY"))
 
-        if game.check_key(pygame.K_c, timebuffer=7):
-            t = None
-            if game.sprites["ENEMY"]:
-                t = game.sprites["ENEMY"][0]
-            game.add_sprite(bullets.homing(
-                                        pos=self.bullet_offset.get_pos(),
-                                        radius=self.r * 0.75,
-                                        speed=10,
-                                        angle=-90,
-                                        target=t,
-                                        target_prox=0,
-                                        homing=5,
-                                        collider="ENEMY"))
-
     def update_draw(self, game):
         pygame.draw.polygon(game.win, self.c, self.morph.get())
         # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
@@ -172,8 +158,8 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1920,
-                user_h=1080,
+                user_w=1280,
+                user_h=720,
                 bg=colours.switch(),
                 framecap=60,
                 show_framerate=False,

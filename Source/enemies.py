@@ -37,7 +37,12 @@ class enemy(sprite):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
     def collide(self, collider):
-        pass
+        for hit in self.hitbox:
+            hit.update_pos()
+            if mv_u.circle_collide(hit, collider):
+                return True
+
+        return False
 
     def flash(self, game):
         o = (self.x, self.y)
@@ -69,9 +74,14 @@ class angel(enemy):
 
         star = mv_u.polygon.anchor(star_shape, (r, r))
 
-        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -45)]
+        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90)]
         self.morph = mv_u.offset_morphpolygon(*self.polygons, offset=(0, 0), parent=self, shift=3)
         self.iter = 0
+
+        self.hitbox = [
+            mv_u.offset_circle(self, (self.r//2 * -1, 0), self.r),
+            mv_u.offset_circle(self, (self.r//2, 0), self.r)
+        ]
 
     def update_move(self, game):
         if game.frames % 55 == 0:
@@ -84,11 +94,12 @@ class angel(enemy):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
-        draw.circle(game.win, colours.red, (self.x, self.y), self.r)
+        # draw.circle(game.win, colours.red, (self.x - self.r//2, self.y), self.r)
+        # draw.circle(game.win, colours.red, (self.x + self.r//2, self.y), self.r)
 
-    def collide(self, collider):
-        if mv_u.circle_collide(self, collider):
-            return True
+
+class sprout(enemy):
+    pass
 
 
 class enemy_explosion(sprite):
