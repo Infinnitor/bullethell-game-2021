@@ -102,12 +102,12 @@ class prox(tracking_bullet):
         self.target_prox = target_prox
         self.target_update = True
 
-        a = -90
+        self.a = -90
         if self.target is not None:
-            a = math.atan2(self.target.y - self.y, self.target.x - self.x)
+            self.a = math.atan2(self.target.y - self.y, self.target.x - self.x)
 
-            self.xmove = math.cos(a)
-            self.ymove = math.sin(a)
+            self.xmove = math.cos(self.a)
+            self.ymove = math.sin(self.a)
 
         self.c = colours.fullblack
 

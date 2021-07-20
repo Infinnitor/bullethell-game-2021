@@ -94,8 +94,8 @@ class angel(enemy):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
-        # draw.circle(game.win, colours.red, (self.x - self.r//2, self.y), self.r)
-        # draw.circle(game.win, colours.red, (self.x + self.r//2, self.y), self.r)
+        draw.circle(game.win, colours.red, (self.x - self.r//2, self.y), self.r)
+        draw.circle(game.win, colours.red, (self.x + self.r//2, self.y), self.r)
 
 
 class sprout(enemy):
