@@ -39,6 +39,7 @@ class enemy(sprite):
     def collide(self, collider):
         for hit in self.hitbox:
             if mv_u.circle_collide(hit, collider):
+                self.health -= 1
                 return True
 
         return False
@@ -46,6 +47,7 @@ class enemy(sprite):
     def flash(self, game):
         o = (self.x, self.y)
         game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
+        self.kill()
 
 
 class angel(enemy):
@@ -59,6 +61,8 @@ class angel(enemy):
 
         r = self.r * 2
         q = r * 0.3
+
+        self.health = 100
 
         star_shape = [
             (r, 0),
@@ -83,6 +87,9 @@ class angel(enemy):
         ]
 
     def update_move(self, game):
+        if self.health < 1:
+            self.flash(game)
+
         if game.frames % 55 == 0:
             self.iter += 1
             if self.iter == len(self.morph):
@@ -108,6 +115,8 @@ class pebble(enemy):
 
         self.c = colour
 
+        self.health = 1
+
         dm1 = [
             (self.r, self.r*2),
             (0, self.r),
@@ -131,6 +140,9 @@ class pebble(enemy):
         self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
 
     def update_move(self, game):
+        if self.health < 1:
+            self.flash(game)
+
         if game.frames % 20 == 0:
             self.iter += 1
             if self.iter == len(self.morph):
