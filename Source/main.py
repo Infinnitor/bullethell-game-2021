@@ -141,11 +141,14 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 50, colours.white))
+    # game.add_sprite(enemies.sprout(game.orientate("Left-Center", "Center"), 15, colours.white))
 
     while game.run:
 
         game.update_keys()
+
+        if game.check_mouse(0, timebuffer=1):
+            game.add_sprite(enemies.pebble(game.mouse_pos, 15, colours.white))
 
         game.update_draw()
 
@@ -158,11 +161,11 @@ game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
                 win_h=1080,
-                user_w=1280,
-                user_h=720,
+                user_w=1920,
+                user_h=1080,
                 bg=colours.switch(),
                 framecap=60,
-                show_framerate=False,
+                show_framerate=True,
                 quit_key=pygame.K_ESCAPE)
 
 main_game(game)

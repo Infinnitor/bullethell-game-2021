@@ -38,7 +38,6 @@ class enemy(sprite):
 
     def collide(self, collider):
         for hit in self.hitbox:
-            hit.update_pos()
             if mv_u.circle_collide(hit, collider):
                 return True
 
@@ -90,16 +89,63 @@ class angel(enemy):
                 self.iter = 0
             self.morph.init_morph(self.iter, 30)
 
+        for hit in self.hitbox:
+            hit.update_pos()
+
     def update_draw(self, game):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
-        draw.circle(game.win, colours.red, (self.x - self.r//2, self.y), self.r)
-        draw.circle(game.win, colours.red, (self.x + self.r//2, self.y), self.r)
+        for hit in self.hitbox:
+            draw.circle(game.win, colours.red, (hit.x, hit.y), hit.r)
 
 
-class sprout(enemy):
-    pass
+class pebble(enemy):
+    def __init__(self, pos, radius, colour):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.c = colour
+
+        dm1 = [
+            (self.r, self.r*2),
+            (0, self.r),
+            (self.r, 0),
+            (self.r*2, self.r)
+        ]
+        diamond1 = mv_u.polygon.anchor(dm1, (self.r, self.r))
+
+        dm2 = [
+            (self.r, 0),
+            (self.r*2, self.r),
+            (self.r, self.r*2),
+            (0, self.r),
+        ]
+
+        diamond2 = mv_u.polygon.anchor(dm2, (self.r, self.r))
+
+        self.morph = mv_u.offset_morphpolygon(diamond1, diamond2, offset=(0, 0), parent=self)
+        self.iter = 0
+
+        self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
+
+    def update_move(self, game):
+        if game.frames % 20 == 0:
+            self.iter += 1
+            if self.iter == len(self.morph):
+                self.iter = 0
+            self.morph.init_morph(self.iter, 15)
+
+        for hit in self.hitbox:
+            hit.update_pos()
+
+    def update_draw(self, game):
+        polygon = self.morph.get()
+        draw.polygon(game.win, self.c, polygon)
+
+        # for hit in self.hitbox:
+        #     draw.circle(game.win, colours.red, (hit.x, hit.y), hit.r)
 
 
 class enemy_explosion(sprite):
