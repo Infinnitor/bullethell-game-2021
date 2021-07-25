@@ -33,7 +33,7 @@ class sprite():
 
         draw.circle(game.win, colours.green, (self.x, self.y), highlight_r)
 
-    def add_default_attr(self):
+    def add_default_attr(self, game):
         try:
             self.layer
         except AttributeError:
