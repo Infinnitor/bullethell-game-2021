@@ -42,6 +42,24 @@ def midpoint(p, q, attr=True, rounding=False):
 #         return (pos[0], )
 
 
+class frametick():
+    def __init__(self, tick, game):
+        self.game = game
+
+        self.start_frame = game.frames
+        self.frame = 0
+        self.tick = tick
+
+    def get(self):
+        self.frame = self.game.frames - self.start_frame
+        if self.frame > self.tick:
+            self.start_frame = self.game.frames
+            self.frame = 0
+            return True
+
+        return False
+
+
 class offset():
     def update_pos(self, pos=(0, 0)):
         if self.parent is not None:

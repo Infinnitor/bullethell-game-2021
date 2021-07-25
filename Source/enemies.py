@@ -139,11 +139,14 @@ class pebble(enemy):
 
         self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
 
+    def add_class_attr(self, game):
+        self.frametick = mv_u.frametick(20, game)
+
     def update_move(self, game):
         if self.health < 1:
             self.flash(game)
 
-        if game.frames % 20 == 0:
+        if self.frametick.get():
             self.iter += 1
             if self.iter == len(self.morph):
                 self.iter = 0

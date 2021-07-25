@@ -44,6 +44,11 @@ class sprite():
         self.destroying = False
         self.highlight = 0
 
+        self.add_class_attr(game)
+
+    def add_class_attr(self, game):
+        pass
+
     def kill(self):
         self.destroy = True
 
