@@ -46,7 +46,7 @@ class enemy(sprite):
 
     def flash(self, game):
         o = (self.x, self.y)
-        game.add_sprite(enemy_explosion(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
+        game.add_sprite(enemy_explosion_square(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
         self.kill()
 
 
@@ -163,7 +163,7 @@ class pebble(enemy):
         #     draw.circle(game.win, colours.red, (hit.x, hit.y), hit.r)
 
 
-class enemy_explosion(sprite):
+class enemy_explosion_circle(sprite):
     def __init__(self, pos, radius, speed, colour, game):
         self.layer = "BACKGROUND"
 
@@ -197,4 +197,35 @@ class enemy_explosion(sprite):
                     check += 1
 
             if check == 4:
+                game.bg_kill(self)
+
+
+class enemy_explosion_square(sprite):
+    def __init__(self, pos, radius, speed, colour, game):
+        self.layer = "BACKGROUND"
+
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.speed = speed
+        self.c = colour
+
+        self.target_r = max((abs(0 - self.x), (game.win_w - self.x)))
+        self.window_corners = [
+            (0, 0),
+            (game.win_w, 0),
+            (0, game.win_h),
+            (game.win_w, game.win_h)
+        ]
+
+    def update_move(self, game):
+        self.r += self.speed
+        self.speed += 0.01
+
+    def update_draw(self, game):
+        draw.rect(game.win, self.c, (self.x - self.r, self.y - self.r, self.r*2, self.r*2))
+
+        if game.frames % 20 == 0:
+            if self.x - self.r < 0 and self.x + self.r > game.win_w:
                 game.bg_kill(self)
