@@ -276,31 +276,26 @@ class game_info():
 
     def update_draw(self):
 
-        def update_move_col(col):
+        for c in self.sprites:
             valid_sprites = []
-            for s_move in self.sprites[col]:
-                s_move.update_move(self)
+            for s_move in self.sprites[c]:
+                if not s_move.destroying:
+                    s_move.update_move(self)
 
                 if not s_move.destroy:
                     valid_sprites.append(s_move)
 
-            self.sprites[col] = valid_sprites
+            self.sprites[c] = valid_sprites
 
-        def update_draw_col(col):
+        for c in self.sprites:
             valid_sprites = []
-            for s_draw in self.sprites[col]:
-                s_draw.update_draw(self)
+            for s_draw in self.sprites[c]:
+                if s_draw.destroying:
+                    s_draw.update_destroy(self)
+                else:
+                    s_draw.update_draw(self)
 
-                if not s_draw.destroy:
-                    valid_sprites.append(s_draw)
-
-            self.sprites[col] = valid_sprites
-
-        for c in self.sprites:
-            update_move_col(c)
-
-        for c in self.sprites:
-            update_draw_col(c)
+            self.sprites[c] = valid_sprites
 
         self.update_particles()
         self.update_screenshake()
