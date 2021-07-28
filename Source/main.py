@@ -23,6 +23,8 @@ class player_class(sprite):
             p.focus_size = p.parent.r * 4
             p.focus_reduce = 4
 
+            p.health = 3
+
     def __init__(self, pos, radius, speed):
         self.layer = "PLAYER"
 
@@ -39,6 +41,8 @@ class player_class(sprite):
 
         # Defaults for player
         self.defaults = self.player_defaults(self)
+
+        self.health = self.defaults.health
 
         square_shape = mv_u.polygon.anchor(
                         [(0, 0), (self.side, 0), (self.side, self.side), (self.side//2, self.side), (0, self.side)],
@@ -62,6 +66,8 @@ class player_class(sprite):
                                 *self.polygons,
                                 offset=(0, 0),
                                 parent=self)
+
+        self.hitbox = [mv_u.offset_circle(parent=self, offset=(0, 0), radius=self.r)]
 
     def update_move(self, game):
 
@@ -115,21 +121,16 @@ class player_class(sprite):
                                     angle=-90,
                                     collider="ENEMY"))
 
-        if game.check_key(pygame.K_x, timebuffer=7):
-            t = None
-            if game.sprites["ENEMY"]:
-                t = game.sprites["ENEMY"][0]
-            game.add_sprite(bullets.prox(
-                                        pos=self.bullet_offset.get_pos(),
-                                        radius=self.r * 0.75,
-                                        speed=10,
-                                        target=t,
-                                        target_prox=100,
-                                        collider="ENEMY"))
-
     def update_draw(self, game):
         pygame.draw.polygon(game.win, self.c, self.morph.get())
-        # pygame.draw.circle(game.win, self.c, (self.x, self.y), self.r)
+
+    def collide(self, collider):
+        for hit in self.hitbox:
+            if mv_u.circle_collide(hit, collider):
+                self.health -= 1
+                return True
+
+        return False
 
 
 def main_game(game):
@@ -141,14 +142,14 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-    # game.add_sprite(enemies.sprout(game.orientate("Left-Center", "Center"), 15, colours.white))
+    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 15, colours.white))
 
     while game.run:
 
         game.update_keys()
 
         if game.check_mouse(0, timebuffer=1):
-            game.add_sprite(enemies.pebble(game.mouse_pos, 15, colours.white))
+            game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
 
         game.update_draw()
 

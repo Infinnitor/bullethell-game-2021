@@ -288,16 +288,12 @@ class game_info():
             self.sprites[c] = valid_sprites
 
         for c in self.sprites:
-            valid_sprites = []
             for s_draw in self.sprites[c]:
                 if s_draw.destroying:
                     s_draw.update_destroy(self)
                 else:
                     s_draw.update_draw(self)
 
-            self.sprites[c] = valid_sprites
-
-        self.update_particles()
         self.update_screenshake()
 
     # Function for scaling the design screen to the target screen

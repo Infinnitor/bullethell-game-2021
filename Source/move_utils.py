@@ -33,13 +33,13 @@ def midpoint(p, q, attr=True, rounding=False):
     return ret
 
 
-# class shape():
-#     def center_square(pos, side):
-#         s = side/2
-#         return (pos[0] - s, pos[1] - s, pos[0] + s, pos[1] + s)
-#
-#     def center_triangle(pos, d):
-#         return (pos[0], )
+class start_snapshot():
+    def __init__(self, pos, radius, colour=False, speed=False):
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.c = colour
 
 
 class frametick():

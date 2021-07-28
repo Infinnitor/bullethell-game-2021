@@ -24,7 +24,6 @@ class bullet(sprite):
         if self.collider_type != "":
             for obj in game.sprites[self.collider_type]:
                 if obj.collide(self):
-                    # obj.flash(game)
                     self.hit_target()
 
     def update_destroy(self, game):

@@ -3,6 +3,8 @@ from sprite_class import sprite
 import move_utils as mv_u
 from move_utils import random, math
 
+import bullets
+
 import draw_utils as draw_u
 from draw_utils import draw
 
@@ -11,30 +13,6 @@ from colour_manager import colours
 
 class enemy(sprite):
     layer = "ENEMY"
-
-    def __init__(self, pos, radius):
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.c = (255, 255, 255)
-
-        self.up = random.choice((True, False))
-
-    def update_move(self, game):
-
-        if self.y < self.r or self.y > 500:
-            self.up = not self.up
-
-        if self.up:
-            self.y -= 4
-        else:
-            self.y += 4
-
-    def update_draw(self, game):
-
-        draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
     def collide(self, collider):
         for hit in self.hitbox:
@@ -62,7 +40,7 @@ class angel(enemy):
         r = self.r * 2
         q = r * 0.3
 
-        self.health = 100
+        self.health = 15
 
         star_shape = [
             (r, 0),
@@ -103,15 +81,17 @@ class angel(enemy):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
-        for hit in self.hitbox:
-            draw.circle(game.win, colours.red, (hit.x, hit.y), hit.r)
-
 
 class pebble(enemy):
-    def __init__(self, pos, radius, colour):
+    def __init__(self, pos, radius, speed, colour):
+        self.start = mv_u.start_snapshot(pos, radius)
+
         self.x = pos[0]
         self.y = pos[1]
+        self.start_y = pos[1]
         self.r = radius
+
+        self.speed = speed
 
         self.c = colour
 
@@ -137,14 +117,23 @@ class pebble(enemy):
         self.morph = mv_u.offset_morphpolygon(diamond1, diamond2, offset=(0, 0), parent=self)
         self.iter = 0
 
+        self.wave = mv_u.sine_bob(wavelength=20, period=4)
+
         self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
 
     def add_class_attr(self, game):
         self.frametick = mv_u.frametick(20, game)
 
     def update_move(self, game):
+        if self.destroying:
+            self.update_destroy(game)
+            return
+
         if self.health < 1:
-            self.flash(game)
+            self.destroying = True
+
+        self.x += self.speed
+        self.y = self.start_y + self.wave.get_pos()
 
         if self.frametick.get():
             self.iter += 1
@@ -156,11 +145,18 @@ class pebble(enemy):
             hit.update_pos()
 
     def update_draw(self, game):
+        if self.destroying:
+            draw.circle(game.win, self.c, (self.x, self.y), self.r)
+            return
+
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
-        # for hit in self.hitbox:
-        #     draw.circle(game.win, colours.red, (hit.x, hit.y), hit.r)
+    def update_destroy(self, game):
+
+        self.r -= 1
+        if self.r < 1:
+            self.flash(game)
 
 
 class enemy_explosion_circle(sprite):
