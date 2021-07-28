@@ -46,7 +46,7 @@ class enemy(sprite):
 
     def flash(self, game):
         o = (self.x, self.y)
-        game.add_sprite(enemy_explosion_square(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
+        game.add_sprite(enemy_explosion_circle(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
         self.kill()
 
 
@@ -191,12 +191,7 @@ class enemy_explosion_circle(sprite):
 
         if self.r > self.target_r and game.frames % 20 == 0:
 
-            check = 0
-            for pos in self.window_corners:
-                if math.dist((self.x, self.y), pos) < self.r:
-                    check += 1
-
-            if check == 4:
+            if self.x - (self.r * 0.7) < 0 and self.x + (self.r * 0.7) > game.win_w:
                 game.bg_kill(self)
 
 
