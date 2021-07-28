@@ -81,6 +81,9 @@ class angel(enemy):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
+    def update_destroy(self, game):
+        pass
+
 
 class pebble(enemy):
     def __init__(self, pos, radius, speed, colour):
@@ -125,10 +128,6 @@ class pebble(enemy):
         self.frametick = mv_u.frametick(20, game)
 
     def update_move(self, game):
-        if self.destroying:
-            self.update_destroy(game)
-            return
-
         if self.health < 1:
             self.destroying = True
 
@@ -145,18 +144,15 @@ class pebble(enemy):
             hit.update_pos()
 
     def update_draw(self, game):
-        if self.destroying:
-            draw.circle(game.win, self.c, (self.x, self.y), self.r)
-            return
-
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
     def update_destroy(self, game):
-
         self.r -= 1
-        if self.r < 1:
+        if self.r < 3:
             self.flash(game)
+
+        draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
 
 class enemy_explosion_circle(sprite):
