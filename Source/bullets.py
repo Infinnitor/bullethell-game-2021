@@ -31,6 +31,8 @@ class bullet(sprite):
         if self.r < 3:
             self.kill()
 
+        self.update_draw(game)
+
     def hit_target(self):
         self.destroying = True
 
@@ -46,10 +48,10 @@ class tracking_bullet(bullet):
         self.update_collisions(game)
 
 
-class standard(bullet):
+class standard_bullet(bullet):
     layer = "BULLET"
 
-    def __init__(self, pos, radius, speed, angle, collider=""):
+    def __init__(self, pos, radius, speed, angle, colour, circle=True, collider=""):
 
         self.x = pos[0]
         self.y = pos[1]
@@ -64,7 +66,8 @@ class standard(bullet):
 
         self.collider_type = collider
 
-        self.c = colours.fullblack
+        self.c = colour
+        self.circle = circle
 
     def update_bullet(self, game):
         if self.onscreen(game):
@@ -74,7 +77,23 @@ class standard(bullet):
             self.destroy = True
 
     def update_draw(self, game):
+        draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
+
+class diamond(standard_bullet):
+    def update_draw(self, game):
+        diamond = (
+            (self.x, self.y - self.r*1.5),
+            (self.x - self.r*1.5, self.y),
+            (self.x, self.y + self.r*1.5),
+            (self.x + self.r*1.5, self.y),
+        )
+
+        draw.polygon(game.win, self.c, diamond)
+
+
+class stretch_diamond(standard_bullet):
+    def update_draw(self, game):
         diamond = (
             (self.x, self.y - self.r*2),
             (self.x - self.r, self.y),
@@ -83,13 +102,12 @@ class standard(bullet):
         )
 
         draw.polygon(game.win, self.c, diamond)
-        # draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
 
 class prox(tracking_bullet):
     layer = "BULLET"
 
-    def __init__(self, pos, radius, speed, target=None, target_prox=1, collider=""):
+    def __init__(self, pos, radius, speed, colour, target=None, target_prox=1, collider=""):
 
         self.x = pos[0]
         self.y = pos[1]
@@ -108,7 +126,7 @@ class prox(tracking_bullet):
             self.xmove = math.cos(self.a)
             self.ymove = math.sin(self.a)
 
-        self.c = colours.fullblack
+        self.c = colour
 
         h_r = self.r
         side_diamond = [
@@ -153,67 +171,3 @@ class prox(tracking_bullet):
         draw.polygon(game.win, self.c, mv_u.polygon.adjust(r_polygon, x=self.x, y=self.y))
 
         # draw.circle(game.win, self.c, (self.x, self.y), self.r)
-
-# Work in progress
-class homing(tracking_bullet):
-    layer = "BULLET"
-
-    def __init__(self, pos, radius, speed, angle, target=None, target_prox=1, homing=1, collider=""):
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-        self.angle = angle
-
-        self.target = target
-        self.target_prox = target_prox
-        self.target_update = True
-
-        self.homing = homing
-
-        a = self.angle
-        if self.target is not None:
-            a = math.atan2(self.target.y - self.y, self.target.x - self.x)
-
-            self.xmove = math.cos(a)
-            self.ymove = math.sin(a)
-
-        self.c = colours.fullblack
-
-        self.collider_type = collider
-
-    def update_bullet(self, game):
-
-        if self.target is not None:
-            if mv_u.circle_collide(self, self.target):
-                # self.target.flash(game)
-                self.kill()
-
-        if self.onscreen(game):
-            self.x += self.xmove * self.speed
-            self.y += self.ymove * self.speed
-        else:
-            self.destroy = True
-
-    def update_tracking(self, game):
-        if self.target is not None:
-            if mv_u.circle_collide(self, self.target, add=[self.target_prox]):
-                self.target_update = False
-
-        if self.target_update:
-            target_a = self.angle
-            if self.target is not None:
-                target_a = math.atan2(self.target.y - self.y, self.target.x - self.x)
-
-            if self.angle > math.degrees(target_a):
-                self.angle -= self.homing
-            elif self.angle < math.degrees(target_a):
-                self.angle += self.homing
-
-            self.xmove = math.cos(math.radians(self.angle))
-            self.ymove = math.sin(math.radians(self.angle))
-
-    def update_draw(self, game):
-        draw.circle(game.win, self.c, (self.x, self.y), self.r)
