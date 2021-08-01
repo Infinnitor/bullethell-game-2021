@@ -2,6 +2,18 @@ import math
 import random
 
 
+def value_to(value, target, step=0.5, prox=0):
+    if value > target:
+        value -= step
+    elif value < target:
+        value += step
+
+    if abs(value - target) < prox:
+        value = target
+
+    return value
+
+
 def circle_collide(p, q, add=[], attr=True):
 
     if attr:
