@@ -91,7 +91,7 @@ class angel(enemy):
     def update_destroy(self, game):
         self.destroy_shrink -= 2
         if self.destroy_shrink < 1:
-            self.flash(game)
+            self.explode(game)
             self.kill()
             return
 
@@ -143,12 +143,14 @@ class pebble(enemy):
             self.morph.init_morph(self.iter, 15)
             game.add_sprite(bullets.diamond((self.x, self.y), self.r//2, 5, 90, colour=self.c, collider="PLAYER"))
 
-        if self.start_move:
-            if not self.onscreen(game):
-                self.kill()
+        if not self.start_move:
+            self.start_move = True
+
         else:
             for hit in self.hitbox:
                 hit.update_pos()
+            if not self.onscreen(game):
+                self.kill()
 
     def update_draw(self, game):
         polygon = self.morph.get()
