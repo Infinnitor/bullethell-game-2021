@@ -68,8 +68,11 @@ class sprite():
 
         return ""
 
-    def center_image_pos(self, sprite, pos):
+    def center_image_pos(self, sprite, pos=None):
         i = sprite.get_size()
+
+        if pos is None:
+            pos = (self.x, self.y)
 
         x = pos[0] - (i[0] // 2)
         y = pos[1] - (i[0] // 2)

@@ -6,7 +6,7 @@ from move_utils import random, math
 import bullets
 
 import draw_utils as draw_u
-from draw_utils import draw
+from pygame import draw, transform, Surface
 
 from colour_manager import colours
 
@@ -57,22 +57,30 @@ class angel(enemy):
 
         self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90)]
         self.morph = mv_u.offset_morphpolygon(*self.polygons, offset=(0, 0), parent=self, shift=3)
-        self.iter = 0
+        self.iter = False
 
         self.hitbox = [
             mv_u.offset_circle(self, (self.r//2 * -1, 0), self.r),
             mv_u.offset_circle(self, (self.r//2, 0), self.r)
         ]
 
+        self.destroy_surf = None
+        self.destroy_shrink = self.r * 4
+
     def update_move(self, game):
         if self.health < 1:
-            self.flash(game)
+            self.destroy_surf = Surface((self.r * 4, self.r * 4))
+            self.destroy_surf.fill(colours.colourkey)
+            self.destroy_surf.set_colorkey(colours.colourkey)
+
+            freeze_polygon = mv_u.polygon.adjust(self.morph.get(), x=(self.x - self.r*2)*-1, y=(self.y - self.r*2)*-1)
+
+            draw.polygon(self.destroy_surf, self.c, freeze_polygon)
+            self.destroying = True
 
         if game.frames % 55 == 0:
-            self.iter += 1
-            if self.iter == len(self.morph):
-                self.iter = 0
-            self.morph.init_morph(self.iter, 30)
+            self.iter = not self.iter
+            self.morph.init_morph(int(self.iter), 30)
 
         for hit in self.hitbox:
             hit.update_pos()
@@ -82,13 +90,19 @@ class angel(enemy):
         draw.polygon(game.win, self.c, polygon)
 
     def update_destroy(self, game):
-        pass
+        self.destroy_shrink -= 2
+        if self.destroy_shrink < 1:
+            self.flash(game)
+            self.kill()
+            return
+
+        shrunk = transform.scale(self.destroy_surf, (self.destroy_shrink, self.destroy_shrink))
+
+        game.win.blit(shrunk, self.center_image_pos(shrunk))
 
 
 class pebble(enemy):
     def __init__(self, pos, radius, speed, colour):
-        self.start = mv_u.start_snapshot(pos, radius)
-
         self.x = pos[0]
         self.y = pos[1]
         self.start_y = pos[1]

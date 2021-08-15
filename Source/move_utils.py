@@ -33,13 +33,13 @@ def midpoint(p, q, attr=True, rounding=False):
     return ret
 
 
-class start_snapshot():
-    def __init__(self, pos, radius, colour=False, speed=False):
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.c = colour
+# class start_snapshot():
+#     def __init__(self, pos, radius, colour=False, speed=False):
+#         self.x = pos[0]
+#         self.y = pos[1]
+#         self.r = radius
+#
+#         self.c = colour
 
 
 class frametick():
