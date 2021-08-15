@@ -114,18 +114,22 @@ class player_class(sprite):
             self.y = oldy
 
         if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
-            game.add_sprite(bullets.standard(
+            game.add_sprite(bullets.stretch_diamond(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
                                     speed=10,
                                     angle=-90,
+                                    colour=self.c,
+                                    circle=False,
                                     collider="ENEMY"))
 
     def update_draw(self, game):
         pygame.draw.polygon(game.win, self.c, self.morph.get())
+        pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
 
     def collide(self, collider):
         for hit in self.hitbox:
+            hit.get_pos()
             if mv_u.circle_collide(hit, collider):
                 self.health -= 1
                 return True
@@ -142,7 +146,7 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 15, colours.white))
+    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 15, 5, colours.white))
 
     while game.run:
 

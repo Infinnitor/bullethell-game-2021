@@ -22,14 +22,14 @@ class enemy(sprite):
 
         return False
 
-    def flash(self, game):
+    def explode(self, game):
         o = (self.x, self.y)
         game.add_sprite(enemy_explosion_circle(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
         self.kill()
 
 
 class angel(enemy):
-    def __init__(self, pos, radius, colour):
+    def __init__(self, pos, radius, speed, colour):
 
         self.x = pos[0]
         self.y = pos[1]
@@ -37,11 +37,10 @@ class angel(enemy):
 
         self.c = colour
 
-        r = self.r * 2
-        q = r * 0.3
-
         self.health = 15
 
+        r = self.r * 2
+        q = r * 0.3
         star_shape = [
             (r, 0),
             (r + q, r - q),
@@ -114,34 +113,23 @@ class pebble(enemy):
 
         self.health = 1
 
-        dm1 = [
-            (self.r, self.r*2),
-            (0, self.r),
-            (self.r, 0),
-            (self.r*2, self.r)
-        ]
-        diamond1 = mv_u.polygon.anchor(dm1, (self.r, self.r))
-
-        dm2 = [
-            (self.r, 0),
-            (self.r*2, self.r),
-            (self.r, self.r*2),
-            (0, self.r),
-        ]
-
-        diamond2 = mv_u.polygon.anchor(dm2, (self.r, self.r))
-
-        self.morph = mv_u.offset_morphpolygon(diamond1, diamond2, offset=(0, 0), parent=self)
-        self.iter = 0
+        dm1 = mv_u.polygon.anchor([(self.r, self.r*2), (0, self.r), (self.r, 0), (self.r*2, self.r)], (self.r, self.r))
+        dm2 = mv_u.polygon.anchor([(self.r, 0), (self.r*2, self.r), (self.r, self.r*2), (0, self.r)], (self.r, self.r))
+        self.morph = mv_u.offset_morphpolygon(dm1, dm2, offset=(0, 0), parent=self)
 
         self.wave = mv_u.sine_bob(wavelength=20, period=4)
+        self.iter = 0
 
         self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
+        self.start_move = False
+
+        self.tick = 20
 
     def add_class_attr(self, game):
-        self.frametick = mv_u.frametick(20, game)
+        self.frametick = mv_u.frametick(self.tick, game)
 
     def update_move(self, game):
+
         if self.health < 1:
             self.destroying = True
 
@@ -153,9 +141,14 @@ class pebble(enemy):
             if self.iter == len(self.morph):
                 self.iter = 0
             self.morph.init_morph(self.iter, 15)
+            game.add_sprite(bullets.diamond((self.x, self.y), self.r//2, 5, 90, colour=self.c, collider="PLAYER"))
 
-        for hit in self.hitbox:
-            hit.update_pos()
+        if self.start_move:
+            if not self.onscreen(game):
+                self.kill()
+        else:
+            for hit in self.hitbox:
+                hit.update_pos()
 
     def update_draw(self, game):
         polygon = self.morph.get()
@@ -164,7 +157,7 @@ class pebble(enemy):
     def update_destroy(self, game):
         self.r -= 1
         if self.r < 3:
-            self.flash(game)
+            self.explode(game)
 
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
