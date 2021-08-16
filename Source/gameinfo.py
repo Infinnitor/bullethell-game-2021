@@ -8,6 +8,7 @@ import levels_manager
 import math
 import time
 import random
+import copy
 import pygame
 
 
@@ -294,7 +295,6 @@ class game_info():
         new_enemy = self.level.get(self)
         if new_enemy is not None:
             self.add_sprite(new_enemy)
-            # print(new_enemy)
 
         for c in self.sprites:
             for s_draw in self.sprites[c]:

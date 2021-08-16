@@ -4,12 +4,15 @@ import enemies
 from colour_manager import colours
 
 
-def pos_mod(enemy, pos):
-    obj = copy.copy(enemy)
-    obj.x = pos[0]
-    obj.y = pos[1]
+class enemy_template():
+    def __init__(self, *e_args, enemy_type):
+        self.args = e_args
+        self.type = enemy_type
 
-    return obj
+        # self.enemy = enemy_type(*e_args)
+
+    def copy(self, pos=(0, 0), **kwargs):
+        return self.type(pos, *self.args, **kwargs)
 
 
 class level():
@@ -20,18 +23,23 @@ class level():
         self.pause = None
 
     def get(self, game):
+
+        if self.iter >= len(self.enemies):
+            self.iter = 0
+
         instruction, action = self.enemies[self.iter]
 
         if self.pause is not None:
             if self.pause.get() is True:
                 self.pause = None
                 self.iter += 1
+                return None
             else:
                 return None
 
         if instruction == "SPAWN":
             self.iter += 1
-            return action
+            return copy.deepcopy(action)
 
         if instruction == "PAUSE":
             if action is None:
@@ -41,52 +49,48 @@ class level():
             else:
                 self.pause = mv_u.frametick(action, game)
 
-        if self.iter >= len(self.enemies):
-            self.iter = 0
-
         return None
 
 
-E_pebble = enemies.pebble((1000, 1000), 15, 4, colours.white)
-E_angel = enemies.angel((0, 0), 15, 4, colours.white)
-
-p = pos_mod(E_pebble, (0, 500))
-print(f"{p.x} {p.y}")
+E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
+E_angel = enemy_template(15, 4, colours.white, enemy_type=enemies.angel)
 
 
 level1 = (
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", 10],
 
-    ["SPAWN", enemies.pebble((0, 500), 15, 4, colours.white)],
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", None],
+    ["PAUSE", 100],
+
+    ["SPAWN", E_angel.copy((250, 250))],
+    ["SPAWN", E_angel.copy((1000, 250))],
     ["PAUSE", None],
 
-    ["SPAWN", enemies.angel((250, 250), 15, 4, colours.white)],
-    ["SPAWN", enemies.angel((500, 500), 15, 4, colours.white)],
-    ["PAUSE", None],
-
-    ["SPAWN", pos_mod(E_pebble, (0, 500))],
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 1000]
 )
 
 LEVEL_ONE = level(level1)

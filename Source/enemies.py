@@ -165,6 +165,11 @@ class pebble(enemy):
 
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
+    def explode(self, game):
+        o = (self.x, self.y)
+        game.add_sprite(enemy_explosion_square(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
+        self.kill()
+
 
 class enemy_explosion_circle(sprite):
     def __init__(self, pos, radius, speed, colour, game):

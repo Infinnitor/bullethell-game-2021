@@ -88,7 +88,6 @@ class colour_list():
         return random.choice(c.full_list)
 
     def switch(c):
-        print("SWITCH")
 
         c.switch_iter += 1
         try:
