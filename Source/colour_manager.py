@@ -79,7 +79,7 @@ class colour_list():
 
             c.switch_list.append(base_c)
 
-            for l in range(25, 100, 25):
+            for l in range(35, 100, 35):
                 c.switch_list.append(draw_u.rgb.lerp(base_c, next_c, l))
 
         c.switch_iter = random.randint(0, len(c.switch_list) - 1)
@@ -88,6 +88,8 @@ class colour_list():
         return random.choice(c.full_list)
 
     def switch(c):
+        print("SWITCH")
+
         c.switch_iter += 1
         try:
             switch_colour = c.switch_list[c.switch_iter]

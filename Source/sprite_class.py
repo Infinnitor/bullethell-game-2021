@@ -53,9 +53,14 @@ class sprite():
         self.destroy = True
 
     def onscreen(self, game):
-        if self.x < 0 or self.x > game.win_w:
+        try:
+            r = self.r
+        except AttributeError:
+            r = 0
+
+        if self.x < 0 - r or self.x > game.win_w + r:
             return False
-        if self.y < 0 or self.y > game.win_h:
+        if self.y < 0 - r or self.y > game.win_h + r:
             return False
 
         return True

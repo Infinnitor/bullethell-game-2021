@@ -146,7 +146,6 @@ def main_game(game):
                         speed=7)
 
     game.add_sprite(player)
-    game.add_sprite(enemies.angel(game.orientate("Left-Center", "Center"), 15, 5, colours.white))
 
     while game.run:
 
@@ -170,7 +169,7 @@ game = game_info(
                 user_h=720,
                 bg=colours.switch(),
                 framecap=60,
-                show_framerate=True,
+                show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
 main_game(game)

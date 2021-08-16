@@ -156,6 +156,8 @@ class pebble(enemy):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
 
+        self.update_highlight(game)
+
     def update_destroy(self, game):
         self.r -= 1
         if self.r < 3:

@@ -3,6 +3,8 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 from sprite_class import sprite
 
+import levels_manager
+
 import math
 import time
 import random
@@ -59,6 +61,8 @@ class game_info():
                         "BULLET": [],
                         "ENEMY" : [],
                         "HIGHPARTICLE" : []}
+
+        self.level = levels_manager.LEVEL_ONE
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -286,6 +290,11 @@ class game_info():
                     valid_sprites.append(s_move)
 
             self.sprites[c] = valid_sprites
+
+        new_enemy = self.level.get(self)
+        if new_enemy is not None:
+            self.add_sprite(new_enemy)
+            # print(new_enemy)
 
         for c in self.sprites:
             for s_draw in self.sprites[c]:
