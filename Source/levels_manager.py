@@ -53,44 +53,44 @@ class level():
 
 
 E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
-E_angel = enemy_template(15, 4, colours.white, enemy_type=enemies.angel)
+E_angel = enemy_template(15, 5, colours.white, enemy_type=enemies.angel)
 
 
 level1 = (
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 10],
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", None],
+    # ["PAUSE", 100],
 
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 10],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
+    ["SPAWN", E_angel.copy((0, 250), jump_pos=[(50, 250), (1800, 250)])],
+    # ["SPAWN", E_angel.copy((1920, 250), jump_pos=[(1800, 250), (50, 250)])],
     ["PAUSE", None],
-    ["PAUSE", 100],
-
-    ["SPAWN", E_angel.copy((250, 250))],
-    ["SPAWN", E_angel.copy((1000, 250))],
-    ["PAUSE", None],
 
     ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 1000]
+    ["PAUSE", 50]
 )
 
 LEVEL_ONE = level(level1)

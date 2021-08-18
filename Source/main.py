@@ -117,7 +117,7 @@ class player_class(sprite):
             game.add_sprite(bullets.stretch_diamond(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
-                                    speed=10,
+                                    speed=20,
                                     angle=-90,
                                     colour=self.c,
                                     circle=False,

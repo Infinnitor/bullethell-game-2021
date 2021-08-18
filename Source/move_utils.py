@@ -62,6 +62,9 @@ class frametick():
         self.frame = 0
         self.tick = tick
 
+    def __len__(self):
+        return self.tick
+
     def get(self):
         self.frame = self.game.frames - self.start_frame
         if self.frame > self.tick:

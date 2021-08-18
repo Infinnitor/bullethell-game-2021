@@ -29,7 +29,7 @@ class enemy(sprite):
 
 
 class angel(enemy):
-    def __init__(self, pos, radius, speed, colour):
+    def __init__(self, pos, radius, speed, colour, jump_pos):
 
         self.x = pos[0]
         self.y = pos[1]
@@ -38,6 +38,18 @@ class angel(enemy):
         self.c = colour
 
         self.health = 15
+
+        self.speed = speed
+
+        self.jump_pos = jump_pos
+        self.jump_iter = 0
+
+        self.targetX = self.jump_pos[0][0]
+        self.targetY = self.jump_pos[0][1]
+        self.find_slope()
+
+        self.shoot_iter = 0
+        self.shoot_tick = None
 
         r = self.r * 2
         q = r * 0.3
@@ -54,9 +66,20 @@ class angel(enemy):
 
         star = mv_u.polygon.anchor(star_shape, (r, r))
 
-        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90)]
+        jump_dm = [
+            (0, self.r * -1),
+            (0, self.r * -1),
+            (r, 0),
+            (r, 0),
+            (0, self.r),
+            (0, self.r),
+            (r * -1, 0),
+            (r * -1, 0)
+        ]
+
+        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90), jump_dm]
         self.morph = mv_u.offset_morphpolygon(*self.polygons, offset=(0, 0), parent=self, shift=3)
-        self.iter = False
+        self.morph_iter = False
 
         self.hitbox = [
             mv_u.offset_circle(self, (self.r//2 * -1, 0), self.r),
@@ -65,6 +88,14 @@ class angel(enemy):
 
         self.destroy_surf = None
         self.destroy_shrink = self.r * 4
+
+    def find_slope(self):
+        self.a = math.atan2(self.targetY - self.y, self.targetX - self.x)
+
+        hyp = math.dist((self.x, self.y), (self.targetX, self.targetY))
+        self.xmove = math.cos(self.a) * self.speed
+        self.ymove = math.sin(self.a) * self.speed
+
 
     def update_move(self, game):
         if self.health < 1:
@@ -77,9 +108,35 @@ class angel(enemy):
             draw.polygon(self.destroy_surf, self.c, freeze_polygon)
             self.destroying = True
 
-        if game.frames % 55 == 0:
-            self.iter = not self.iter
-            self.morph.init_morph(int(self.iter), 30)
+        if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed / 2:
+
+            if self.shoot_tick is None:
+                self.shoot_tick = mv_u.frametick(10, game)
+                self.shoot_iter = 0
+
+            elif self.shoot_tick.get():
+                game.add_sprite(bullets.diamond((self.x, self.y), self.r//2, 5, 90, colour=self.c, collider="PLAYER"))
+                self.shoot_iter += 1
+                if self.shoot_iter > 3:
+                    self.shoot_tick = None
+                    self.shoot_iter = 0
+
+            self.morph_iter = not self.morph_iter
+            self.morph.init_morph(int(self.morph_iter), 10)
+
+            if self.shoot_tick is None:
+                self.jump_iter += 1
+                if self.jump_iter == len(self.jump_pos):
+                    self.jump_iter = 0
+
+                self.targetX = self.jump_pos[self.jump_iter][0]
+                self.targetY = self.jump_pos[self.jump_iter][1]
+
+                self.find_slope()
+
+        if self.shoot_tick is None:
+            self.x += self.xmove
+            self.y += self.ymove
 
         for hit in self.hitbox:
             hit.update_pos()
@@ -87,6 +144,8 @@ class angel(enemy):
     def update_draw(self, game):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
+
+        draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
 
     def update_destroy(self, game):
         self.destroy_shrink -= 2
