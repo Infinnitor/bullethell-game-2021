@@ -138,7 +138,6 @@ class angel(enemy):
                 self.shoot_iter = 0
 
             elif self.shoot_tick.get():
-                # game.add_sprite(bullets.diamond((self.x, self.y), 8, 5, 90, colour=self.c, collider="PLAYER"))
                 if self.shoot_iter % 2 == 0:
                     self.pattern("BLARGH", game, speed=7)
                 else:
@@ -147,11 +146,6 @@ class angel(enemy):
                 if self.shoot_iter % 10 == 0:
                     p = game.sprites["PLAYER"][0]
                     game.add_sprite(bullets.prox_diamond((self.x, self.y), 15, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
-
-                # else:
-                #     self.pattern("CUSTOM", game, a_list=range(17, 377, 23), speed=10)
-
-                # self.pattern("BLARGH", game, speed=7)
 
                 self.shoot_iter += 1
                 if self.shoot_iter > 49:
