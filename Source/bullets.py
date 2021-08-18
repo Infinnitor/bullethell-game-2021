@@ -92,6 +92,11 @@ class diamond(standard_bullet):
         draw.polygon(game.win, self.c, diamond)
 
 
+class square(standard_bullet):
+    def update_draw(self, game):
+        draw.rect(game.win, self.c, (self.x - self.r, self.y - self.r, self.r*2, self.r*2))
+
+
 class stretch_diamond(standard_bullet):
     def update_draw(self, game):
         diamond = (
@@ -143,7 +148,7 @@ class prox(tracking_bullet):
     def update_bullet(self, game):
 
         if self.target is not None:
-            if mv_u.circle_collide(self, self.target):
+            if self.target.collide(self):
                 # self.target.flash(game)
                 self.hit_target()
 
@@ -167,7 +172,21 @@ class prox(tracking_bullet):
             self.ymove = math.sin(self.a)
 
     def update_draw(self, game):
+        draw.circle(game.win, self.c, (self.x, self.y), self.r)
+
+class prox_diamond(prox):
+    def update_draw(self, game):
+        diamond = (
+            (self.x, self.y - self.r*1.5),
+            (self.x - self.r*1.5, self.y),
+            (self.x, self.y + self.r*1.5),
+            (self.x + self.r*1.5, self.y),
+        )
+
+        draw.polygon(game.win, self.c, diamond)
+
+
+class prox_funi(prox):
+    def update_draw(self, game):
         r_polygon = mv_u.polygon.rotate(self.shape, (self.r, self.r), math.degrees(self.a))
         draw.polygon(game.win, self.c, mv_u.polygon.adjust(r_polygon, x=self.x, y=self.y))
-
-        # draw.circle(game.win, self.c, (self.x, self.y), self.r)

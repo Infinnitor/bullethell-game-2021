@@ -62,14 +62,13 @@ class player_class(sprite):
                         (hit_r, hit_r))
 
         self.polygons = [square_shape, hitbox_shape, shooting_shape, hitbox_shoot]
-        self.morph = mv_u.offset_morphpolygon(
-                                *self.polygons,
-                                offset=(0, 0),
-                                parent=self)
+        self.morph = mv_u.offset_morphpolygon(offset=(0, 0), *self.polygons, parent=self)
 
         self.hitbox = [mv_u.offset_circle(parent=self, offset=(0, 0), radius=self.r)]
 
     def update_move(self, game):
+        if self.health < 0:
+            raise Exception('you died lol')
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             self.focus = True
@@ -117,7 +116,7 @@ class player_class(sprite):
             game.add_sprite(bullets.stretch_diamond(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
-                                    speed=20,
+                                    speed=15,
                                     angle=-90,
                                     colour=self.c,
                                     circle=False,
@@ -125,7 +124,7 @@ class player_class(sprite):
 
     def update_draw(self, game):
         pygame.draw.polygon(game.win, self.c, self.morph.get())
-        pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
+        # pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
 
     def collide(self, collider):
         for hit in self.hitbox:

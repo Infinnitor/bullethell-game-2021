@@ -37,7 +37,7 @@ class angel(enemy):
 
         self.c = colour
 
-        self.health = 15
+        self.health = 50
 
         self.speed = speed
 
@@ -96,6 +96,29 @@ class angel(enemy):
         self.xmove = math.cos(self.a) * self.speed
         self.ymove = math.sin(self.a) * self.speed
 
+    def pattern(self, t, game, radius=8, speed=5, a_list=[]):
+        use_range = ("4DIAGONAL", "4DIR", "BLARGH", "BLARGH2")
+        r = None
+
+        if t == "4DIAGONAL":
+            r = range(-45, 315, 90)
+
+        if t == "4DIR":
+            r = range(0, 360, 90)
+
+        if t == "BLARGH":
+            r = range(0, 360, 11)
+
+        if t == "BLARGH2":
+            r = range(11, 371, 23)
+
+        if t in use_range:
+            for angle in list(r):
+                game.add_sprite(bullets.diamond((self.x, self.y), 8, speed, angle, colour=self.c, collider="PLAYER"))
+
+        if t == "CUSTOM":
+            for angle in a_list:
+                game.add_sprite(bullets.diamond((self.x, self.y), 8, speed, angle, colour=self.c, collider="PLAYER"))
 
     def update_move(self, game):
         if self.health < 1:
@@ -111,18 +134,32 @@ class angel(enemy):
         if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed / 2:
 
             if self.shoot_tick is None:
-                self.shoot_tick = mv_u.frametick(10, game)
+                self.shoot_tick = mv_u.frametick(5, game)
                 self.shoot_iter = 0
 
             elif self.shoot_tick.get():
-                game.add_sprite(bullets.diamond((self.x, self.y), self.r//2, 5, 90, colour=self.c, collider="PLAYER"))
+                # game.add_sprite(bullets.diamond((self.x, self.y), 8, 5, 90, colour=self.c, collider="PLAYER"))
+                if self.shoot_iter % 2 == 0:
+                    self.pattern("BLARGH", game, speed=10)
+                else:
+                    self.pattern("BLARGH2", game, speed=10)
+
+                if self.shoot_iter % 10 == 0:
+                    p = game.sprites["PLAYER"][0]
+                    game.add_sprite(bullets.prox_diamond((self.x, self.y), 15, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
+
+                # else:
+                #     self.pattern("CUSTOM", game, a_list=range(17, 377, 23), speed=10)
+
+                # self.pattern("BLARGH", game, speed=7)
+
                 self.shoot_iter += 1
-                if self.shoot_iter > 3:
+                if self.shoot_iter > 50:
                     self.shoot_tick = None
                     self.shoot_iter = 0
 
-            self.morph_iter = not self.morph_iter
-            self.morph.init_morph(int(self.morph_iter), 10)
+                self.morph_iter = not self.morph_iter
+                self.morph.init_morph(int(self.morph_iter), 10)
 
             if self.shoot_tick is None:
                 self.jump_iter += 1
@@ -144,8 +181,7 @@ class angel(enemy):
     def update_draw(self, game):
         polygon = self.morph.get()
         draw.polygon(game.win, self.c, polygon)
-
-        draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
+        # draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
 
     def update_destroy(self, game):
         self.destroy_shrink -= 2
@@ -155,7 +191,6 @@ class angel(enemy):
             return
 
         shrunk = transform.scale(self.destroy_surf, (self.destroy_shrink, self.destroy_shrink))
-
         game.win.blit(shrunk, self.center_image_pos(shrunk))
 
 
@@ -184,10 +219,12 @@ class pebble(enemy):
 
         self.tick = 20
 
-    def add_class_attr(self, game):
-        self.frametick = mv_u.frametick(self.tick, game)
+        self.frametick = None
 
     def update_move(self, game):
+
+        if self.frametick is None:
+            self.frametick = mv_u.frametick(self.tick, game)
 
         if self.health < 1:
             self.destroying = True
