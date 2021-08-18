@@ -37,7 +37,7 @@ class angel(enemy):
 
         self.c = colour
 
-        self.health = 50
+        self.health = 100
 
         self.speed = speed
 
@@ -114,11 +114,11 @@ class angel(enemy):
 
         if t in use_range:
             for angle in list(r):
-                game.add_sprite(bullets.diamond((self.x, self.y), 8, speed, angle, colour=self.c, collider="PLAYER"))
+                game.add_sprite(bullets.rotate_shard((self.x, self.y), 8, speed, angle, self.c, shard_mod=1.5, collider="PLAYER"))
 
         if t == "CUSTOM":
             for angle in a_list:
-                game.add_sprite(bullets.diamond((self.x, self.y), 8, speed, angle, colour=self.c, collider="PLAYER"))
+                game.add_sprite(bullets.rotate_shard((self.x, self.y), 8, speed, angle, self.c, shard_mod=1.5, collider="PLAYER"))
 
     def update_move(self, game):
         if self.health < 1:
@@ -134,7 +134,7 @@ class angel(enemy):
         if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed / 2:
 
             if self.shoot_tick is None:
-                self.shoot_tick = mv_u.frametick(5, game)
+                self.shoot_tick = mv_u.frametick(10, game)
                 self.shoot_iter = 0
 
             elif self.shoot_tick.get():
@@ -154,7 +154,7 @@ class angel(enemy):
                 # self.pattern("BLARGH", game, speed=7)
 
                 self.shoot_iter += 1
-                if self.shoot_iter > 50:
+                if self.shoot_iter > 49:
                     self.shoot_tick = None
                     self.shoot_iter = 0
 

@@ -23,7 +23,7 @@ class player_class(sprite):
             p.focus_size = p.parent.r * 4
             p.focus_reduce = 4
 
-            p.health = 10
+            p.health = 6
 
     def __init__(self, pos, radius, speed):
         self.layer = "PLAYER"
@@ -67,14 +67,14 @@ class player_class(sprite):
         self.hitbox = [mv_u.offset_circle(parent=self, offset=(0, 0), radius=self.r)]
 
     def update_move(self, game):
-        if self.health < 0:
-            raise Exception('you died lol')
+        if self.health < 1:
+            self.kill()
 
         if game.check_key(pygame.K_LSHIFT, pygame.K_RSHIFT):
             self.focus = True
             self.speed = self.defaults.focus_speed
 
-            if game.check_key(pygame.K_z, pygame.K_x):
+            if game.check_key(pygame.K_z, pygame.K_SPACE):
                 self.morph.init_morph(3, frames=10)
 
             else:
@@ -84,7 +84,7 @@ class player_class(sprite):
             self.focus = False
             self.speed = self.defaults.speed
 
-            if game.check_key(pygame.K_z, pygame.K_x):
+            if game.check_key(pygame.K_z, pygame.K_SPACE):
                 self.morph.init_morph(2, frames=5)
 
             else:
@@ -113,13 +113,12 @@ class player_class(sprite):
             self.y = oldy
 
         if game.check_key(pygame.K_SPACE, pygame.K_z, timebuffer=7):
-            game.add_sprite(bullets.stretch_diamond(
+            game.add_sprite(bullets.shard(
                                     pos=self.bullet_offset.get_pos(),
                                     radius=self.r * 0.75,
-                                    speed=15,
+                                    speed=11,
                                     angle=-90,
                                     colour=self.c,
-                                    circle=False,
                                     collider="ENEMY"))
 
     def update_draw(self, game):
@@ -146,24 +145,24 @@ def main_game(game):
 
     game.add_sprite(player)
 
-    try:
-        while game.run:
+    while game.run:
 
-            game.update_keys()
+        game.update_keys()
 
-            if game.check_mouse(0, timebuffer=1):
-                game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
+        # if game.check_mouse(0, timebuffer=1):
+        #     game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
 
-            game.update_draw()
+        game.update_draw()
 
-            game.update_scaled()
+        if player.destroy is True:
+            return False
 
-            game.update_state()
+        game.update_scaled()
 
-        return True
+        game.update_state()
 
-    except Exception:
-        return False
+    return True
+
 
 
 game = game_info(

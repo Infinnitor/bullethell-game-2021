@@ -51,7 +51,7 @@ class tracking_bullet(bullet):
 class standard_bullet(bullet):
     layer = "BULLET"
 
-    def __init__(self, pos, radius, speed, angle, colour, circle=True, collider=""):
+    def __init__(self, pos, radius, speed, angle, colour, collider=""):
 
         self.x = pos[0]
         self.y = pos[1]
@@ -60,14 +60,13 @@ class standard_bullet(bullet):
         self.speed = speed
         self.angle = angle
 
-        a = math.radians(self.angle)
-        self.xmove = math.cos(a)
-        self.ymove = math.sin(a)
+        self.a = math.radians(self.angle)
+        self.xmove = math.cos(self.a)
+        self.ymove = math.sin(self.a)
 
         self.collider_type = collider
 
         self.c = colour
-        self.circle = circle
 
     def update_bullet(self, game):
         if self.onscreen(game):
@@ -97,16 +96,61 @@ class square(standard_bullet):
         draw.rect(game.win, self.c, (self.x - self.r, self.y - self.r, self.r*2, self.r*2))
 
 
-class stretch_diamond(standard_bullet):
+class shard(standard_bullet):
     def update_draw(self, game):
         diamond = (
-            (self.x, self.y - self.r*2),
+            (self.x, self.y - self.r*1.5),
             (self.x - self.r, self.y),
-            (self.x, self.y + self.r*2),
+            (self.x, self.y + self.r*1.5),
             (self.x + self.r, self.y),
         )
 
         draw.polygon(game.win, self.c, diamond)
+
+
+class rotate_shard(standard_bullet):
+    def __init__(self, pos, radius, speed, angle, colour, shard_mod=2, collider=""):
+
+        self.x = pos[0]
+        self.y = pos[1]
+        self.r = radius
+
+        self.speed = speed
+        self.angle = angle
+
+        self.a = math.radians(self.angle)
+        self.xmove = math.cos(self.a)
+        self.ymove = math.sin(self.a)
+
+        self.shard_mod = shard_mod
+        stretch_diamond = (
+            (0, self.r * -1),
+            (self.r * shard_mod * -1, 0),
+            (0, self.r),
+            (self.r * shard_mod, 0),
+        )
+        self.polygon = mv_u.polygon.rotate(stretch_diamond, (0, 0), angle)
+
+        self.collider_type = collider
+
+        self.c = colour
+
+    def update_draw(self, game):
+        draw.polygon(game.win, self.c, mv_u.polygon.adjust(self.polygon, x=self.x, y=self.y))
+
+    def update_destroy(self, game):
+        self.r -= 0.7
+        if self.r < 3:
+            self.kill()
+
+        shard_diamond = (
+            (0, self.r * -1),
+            (self.r * self.shard_mod * -1, 0),
+            (0, self.r),
+            (self.r * self.shard_mod, 0),
+        )
+        shard_r = mv_u.polygon.rotate(shard_diamond, (0, 0), self.a)
+        draw.polygon(game.win, self.c, mv_u.polygon.adjust(shard_r, x=self.x, y=self.y))
 
 
 class prox(tracking_bullet):
