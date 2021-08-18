@@ -23,7 +23,7 @@ class player_class(sprite):
             p.focus_size = p.parent.r * 4
             p.focus_reduce = 4
 
-            p.health = 3
+            p.health = 10
 
     def __init__(self, pos, radius, speed):
         self.layer = "PLAYER"
@@ -146,18 +146,24 @@ def main_game(game):
 
     game.add_sprite(player)
 
-    while game.run:
+    try:
+        while game.run:
 
-        game.update_keys()
+            game.update_keys()
 
-        if game.check_mouse(0, timebuffer=1):
-            game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
+            if game.check_mouse(0, timebuffer=1):
+                game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
 
-        game.update_draw()
+            game.update_draw()
 
-        game.update_scaled()
+            game.update_scaled()
 
-        game.update_state()
+            game.update_state()
+
+        return True
+
+    except Exception:
+        return False
 
 
 game = game_info(
@@ -171,4 +177,5 @@ game = game_info(
                 show_framerate=False,
                 quit_key=pygame.K_ESCAPE)
 
-main_game(game)
+while not main_game(game):
+    game.purge_sprites()

@@ -140,9 +140,9 @@ class angel(enemy):
             elif self.shoot_tick.get():
                 # game.add_sprite(bullets.diamond((self.x, self.y), 8, 5, 90, colour=self.c, collider="PLAYER"))
                 if self.shoot_iter % 2 == 0:
-                    self.pattern("BLARGH", game, speed=10)
+                    self.pattern("BLARGH", game, speed=7)
                 else:
-                    self.pattern("BLARGH2", game, speed=10)
+                    self.pattern("BLARGH2", game, speed=7)
 
                 if self.shoot_iter % 10 == 0:
                     p = game.sprites["PLAYER"][0]
