@@ -85,12 +85,13 @@ level1 = (
     # ["PAUSE", None],
     # ["PAUSE", 100],
 
-    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
-    # ["SPAWN", E_angel.copy((1920, 250), jump_pos=[(1800, 250), (50, 250)])],
+    # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250)])],
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
     ["PAUSE", None],
-
-    ["SPAWN", E_pebble.copy((0, 500))],
-    ["PAUSE", 50]
+    #
+    # ["SPAWN", E_pebble.copy((0, 500))],
+    # ["PAUSE", 50]
 )
 
 def init():

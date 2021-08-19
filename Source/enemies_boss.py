@@ -2,11 +2,11 @@ from sprite_class import sprite
 from pygame import draw, transform, Surface
 
 import move_utils as mv_u
+import bullets
 import math
 
-import bullets
-
 from colour_manager import colours
+from enemies import enemy_explosion_circle
 
 
 def float_range(start, end, step):
@@ -19,7 +19,7 @@ def float_range(start, end, step):
     return items
 
 
-class enemy(sprite):
+class boss(sprite):
     layer = "ENEMY"
 
     def collide(self, collider):
@@ -36,7 +36,7 @@ class enemy(sprite):
         self.kill()
 
 
-class angel(enemy):
+class angel(boss):
     def __init__(self, pos, radius, speed, colour, jump_pos):
 
         self.x = pos[0]
@@ -45,7 +45,7 @@ class angel(enemy):
 
         self.c = colour
 
-        self.health = 25
+        self.health = 50
 
         self.speed = speed
 
@@ -146,14 +146,17 @@ class angel(enemy):
                 self.shoot_iter = 0
 
             elif self.shoot_tick.get():
-                if self.shoot_iter % 3 == 0:
-                    p = game.sprites["PLAYER"][0]
-                    game.add_sprite(bullets.init_diamond((self.x, self.y), 10, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
+                if self.shoot_iter % 2 == 0:
+                    self.pattern("BLARGH", game, speed=7)
+                else:
+                    self.pattern("BLARGH2", game, speed=7)
 
-                self.pattern("CUSTOM", game, a_list=range(-45, 315, 60), speed=7)
+                if self.shoot_iter % 10 == 0:
+                    p = game.sprites["PLAYER"][0]
+                    game.add_sprite(bullets.init_diamond((self.x, self.y), 15, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
 
                 self.shoot_iter += 1
-                if self.shoot_iter > 9:
+                if self.shoot_iter > 49:
                     self.shoot_tick = None
                     self.shoot_iter = 0
 
@@ -191,139 +194,3 @@ class angel(enemy):
 
         shrunk = transform.scale(self.destroy_surf, (self.destroy_shrink, self.destroy_shrink))
         game.win.blit(shrunk, self.center_image_pos(shrunk))
-
-
-class pebble(enemy):
-    def __init__(self, pos, radius, speed, colour):
-        self.x = pos[0]
-        self.y = pos[1]
-        self.start_y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-
-        self.c = colour
-
-        self.health = 1
-
-        dm1 = mv_u.polygon.anchor([(self.r, self.r*2), (0, self.r), (self.r, 0), (self.r*2, self.r)], (self.r, self.r))
-        dm2 = mv_u.polygon.anchor([(self.r, 0), (self.r*2, self.r), (self.r, self.r*2), (0, self.r)], (self.r, self.r))
-        self.morph = mv_u.offset_morphpolygon(dm1, dm2, offset=(0, 0), parent=self)
-
-        self.wave = mv_u.sine_bob(wavelength=20, period=4)
-        self.iter = 0
-
-        self.hitbox = [mv_u.offset_circle(self, (0, 0), self.r)]
-        self.start_move = False
-
-        self.tick = 20
-
-        self.frametick = None
-
-    def update_move(self, game):
-
-        if self.frametick is None:
-            self.frametick = mv_u.frametick(self.tick, game)
-
-        if self.health < 1:
-            self.destroying = True
-
-        self.x += self.speed
-        self.y = self.start_y + self.wave.get_pos()
-
-        if self.frametick.get():
-            self.iter += 1
-            if self.iter == len(self.morph):
-                self.iter = 0
-            self.morph.init_morph(self.iter, 15)
-            game.add_sprite(bullets.diamond((self.x, self.y), self.r//2, 5, 90, colour=self.c, collider="PLAYER"))
-
-        if not self.start_move:
-            self.start_move = True
-
-        else:
-            for hit in self.hitbox:
-                hit.update_pos()
-            if not self.onscreen(game):
-                self.kill()
-
-    def update_draw(self, game):
-        polygon = self.morph.get()
-        draw.polygon(game.win, self.c, polygon)
-
-        self.update_highlight(game)
-
-    def update_destroy(self, game):
-        self.r -= 1
-        if self.r < 3:
-            self.explode(game)
-
-        draw.circle(game.win, self.c, (self.x, self.y), self.r)
-
-    def explode(self, game):
-        o = (self.x, self.y)
-        game.add_sprite(enemy_explosion_square(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
-        self.kill()
-
-
-class enemy_explosion_circle(sprite):
-    def __init__(self, pos, radius, speed, colour, game):
-        self.layer = "BACKGROUND"
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-        self.c = colour
-
-        self.target_r = max((abs(0 - self.x), (game.win_w - self.x)))
-        self.window_corners = [
-            (0, 0),
-            (game.win_w, 0),
-            (0, game.win_h),
-            (game.win_w, game.win_h)
-        ]
-
-    def update_move(self, game):
-        self.r += self.speed
-        self.speed += 0.01
-
-    def update_draw(self, game):
-        draw.circle(game.win, self.c, (self.x, self.y), self.r)
-
-        if self.r > self.target_r and game.frames % 20 == 0:
-
-            if self.x - (self.r * 0.7) < 0 and self.x + (self.r * 0.7) > game.win_w:
-                game.bg_kill(self)
-
-
-class enemy_explosion_square(sprite):
-    def __init__(self, pos, radius, speed, colour, game):
-        self.layer = "BACKGROUND"
-
-        self.x = pos[0]
-        self.y = pos[1]
-        self.r = radius
-
-        self.speed = speed
-        self.c = colour
-
-        self.target_r = max((abs(0 - self.x), (game.win_w - self.x)))
-        self.window_corners = [
-            (0, 0),
-            (game.win_w, 0),
-            (0, game.win_h),
-            (game.win_w, game.win_h)
-        ]
-
-    def update_move(self, game):
-        self.r += self.speed
-        self.speed += 0.01
-
-    def update_draw(self, game):
-        draw.rect(game.win, self.c, (self.x - self.r, self.y - self.r, self.r*2, self.r*2))
-
-        if game.frames % 20 == 0:
-            if self.x - self.r < 0 and self.x + self.r > game.win_w:
-                game.bg_kill(self)
