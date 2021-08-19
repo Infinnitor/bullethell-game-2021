@@ -274,8 +274,6 @@ class init_diamond(init_tracker):
         draw.polygon(game.win, self.c, diamond)
 
 
-
-
 class prox_funi(prox):
     def update_draw(self, game):
         r_polygon = mv_u.polygon.rotate(self.shape, (self.r, self.r), math.degrees(self.a))

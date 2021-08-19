@@ -55,6 +55,8 @@ class level():
 E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
 E_angel = enemy_template(30, 7, colours.white, enemy_type=enemies.angel)
 
+fast_pebble = enemy_template(15, 10, colours.white, enemy_type=enemies.pebble)
+
 
 level1 = (
     # ["SPAWN", E_pebble.copy((0, 500))],
@@ -87,7 +89,7 @@ level1 = (
 
     # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
     ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250)])],
-    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
+    # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
     ["PAUSE", None],
     #
     # ["SPAWN", E_pebble.copy((0, 500))],

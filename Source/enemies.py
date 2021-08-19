@@ -221,7 +221,6 @@ class pebble(enemy):
         self.frametick = None
 
     def update_move(self, game):
-
         if self.frametick is None:
             self.frametick = mv_u.frametick(self.tick, game)
 
