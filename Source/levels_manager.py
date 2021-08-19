@@ -53,7 +53,7 @@ class level():
 
 
 E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
-E_angel = enemy_template(30, 15, colours.white, enemy_type=enemies.angel)
+E_angel = enemy_template(30, 7, colours.white, enemy_type=enemies.angel)
 
 
 level1 = (
@@ -85,12 +85,14 @@ level1 = (
     # ["PAUSE", None],
     # ["PAUSE", 100],
 
-    ["SPAWN", E_angel.copy((0, 250), jump_pos=[(970, 250), (1800, 250), (120, 250)])],
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
     # ["SPAWN", E_angel.copy((1920, 250), jump_pos=[(1800, 250), (50, 250)])],
     ["PAUSE", None],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 50]
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 50]
 )
 
-LEVEL_ONE = level(level1)
+def init():
+    global LEVEL_ONE
+    LEVEL_ONE = level(level1)

@@ -1,13 +1,13 @@
 from gameinfo import game_info, pygame, time, math, random
 from colour_manager import colours
+from sprite_class import sprite
 
-import draw_utils as draw_u
 import move_utils as mv_u
+import draw_utils as draw_u
 
-import enemies
 import bullets
 
-from sprite_class import sprite
+import levels_manager
 
 
 # Player class
@@ -22,6 +22,9 @@ class player_class(sprite):
 
             p.focus_size = p.parent.r * 4
             p.focus_reduce = 4
+
+            p.deflect_frames = 5
+            p.deflect_recharge = 30
 
             p.health = 6
 
@@ -41,6 +44,9 @@ class player_class(sprite):
 
         # Defaults for player
         self.defaults = self.player_defaults(self)
+
+        self.deflect = 0
+        self.deflect_recharge = 0
 
         self.health = self.defaults.health
 
@@ -121,9 +127,20 @@ class player_class(sprite):
                                     colour=self.c,
                                     collider="ENEMY"))
 
+        if game.check_key(pygame.K_x):
+            if self.deflect_recharge == 0:
+                self.deflect = self.defaults.deflect_frames
+                self.deflect_recharge = self.defaults.deflect_recharge
+
+        if self.deflect > 0:
+            self.deflect -= 1
+        if self.deflect_recharge > 0:
+            self.deflect_recharge -= 1
+
     def update_draw(self, game):
+        if self.deflect > 0:
+            pygame.draw.circle(game.win, colours.purple, (self.x, self.y), self.r*3)
         pygame.draw.polygon(game.win, self.c, self.morph.get())
-        # pygame.draw.circle(game.win, colours.red, (self.x, self.y), self.r)
 
     def collide(self, collider):
         for hit in self.hitbox:
@@ -164,7 +181,6 @@ def main_game(game):
     return True
 
 
-
 game = game_info(
                 name="BULLETHELL",
                 win_w=1920,
@@ -178,3 +194,4 @@ game = game_info(
 
 while not main_game(game):
     game.purge_sprites()
+    game.load_levels()

@@ -9,6 +9,7 @@ from colour_manager import colours
 
 
 class bullet(sprite):
+
     def update_move(self, game):
         if self.destroying:
             self.update_destroy(game)
@@ -35,6 +36,9 @@ class bullet(sprite):
 
     def hit_target(self):
         self.destroying = True
+
+    def deflect(self, new_collider="ENEMY"):
+        pass
 
 
 class tracking_bullet(bullet):
@@ -168,7 +172,7 @@ class prox(tracking_bullet):
         self.target_prox = target_prox
         self.target_update = True
 
-        self.a = -90
+        self.a = math.radians(-90)
         if self.target is not None:
             self.a = math.atan2(self.target.y - self.y, self.target.x - self.x)
 
@@ -217,6 +221,29 @@ class prox(tracking_bullet):
 
     def update_draw(self, game):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
+
+
+class prox_deflect(prox):
+    def deflect(self, new_collider="ENEMY", new_c=colours.fullblack):
+        if self.destroying is True:
+            return False
+
+        try:
+            if self.deflected:
+                return False
+
+        except AttributeError:
+            self.deflected = True
+
+        self.target_update = False
+        self.xmove *= -1
+        self.ymove *= -1
+
+        self.collider_type = new_collider
+        self.c = new_c
+
+        return True
+
 
 class prox_diamond(prox):
     def update_draw(self, game):

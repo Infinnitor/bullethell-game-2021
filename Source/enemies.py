@@ -37,7 +37,7 @@ class angel(enemy):
 
         self.c = colour
 
-        self.health = 100
+        self.health = 50
 
         self.speed = speed
 
@@ -92,7 +92,6 @@ class angel(enemy):
     def find_slope(self):
         self.a = math.atan2(self.targetY - self.y, self.targetX - self.x)
 
-        hyp = math.dist((self.x, self.y), (self.targetX, self.targetY))
         self.xmove = math.cos(self.a) * self.speed
         self.ymove = math.sin(self.a) * self.speed
 
@@ -107,10 +106,11 @@ class angel(enemy):
             r = range(0, 360, 90)
 
         if t == "BLARGH":
-            r = range(0, 360, 11)
+            r = range(0, 360, 20)
 
         if t == "BLARGH2":
-            r = range(11, 371, 23)
+            # r = range(11, 371, 23)
+            r = range(10, 370, 20)
 
         if t in use_range:
             for angle in list(r):

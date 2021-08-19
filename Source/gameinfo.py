@@ -63,7 +63,7 @@ class game_info():
                         "ENEMY" : [],
                         "HIGHPARTICLE" : []}
 
-        self.level = levels_manager.LEVEL_ONE
+        self.load_levels()
 
     class particle(sprite):
         def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
@@ -112,6 +112,10 @@ class game_info():
 
                 else:
                     raise AttributeError(f"{part.shape} is not a valid shape for a particle")
+
+    def load_levels(self):
+        levels_manager.init()
+        self.level = levels_manager.LEVEL_ONE
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
