@@ -26,6 +26,8 @@ class player_class(sprite):
             p.deflect_frames = 5
             p.deflect_recharge = 30
 
+            p.iframes = 100
+
             p.health = 6
 
     def __init__(self, pos, radius, speed):
@@ -71,8 +73,14 @@ class player_class(sprite):
         self.morph = mv_u.offset_morphpolygon(offset=(0, 0), *self.polygons, parent=self)
 
         self.hitbox = [mv_u.offset_circle(parent=self, offset=(0, 0), radius=self.r)]
+        self.collided_frame = False
+        self.iframes = 0
 
     def update_move(self, game):
+        self.collided_frame = False
+        if self.iframes > 0:
+            self.iframes -= 1
+
         if self.health < 1:
             self.kill()
 
@@ -138,15 +146,26 @@ class player_class(sprite):
             self.deflect_recharge -= 1
 
     def update_draw(self, game):
+        # if self.collided_frame:
+        #     game.init_screenshake(4, 10)
+
+        if self.iframes // 10 % 2 == 1:
+            return
+
         if self.deflect > 0:
             pygame.draw.circle(game.win, colours.purple, (self.x, self.y), self.r*3)
         pygame.draw.polygon(game.win, self.c, self.morph.get())
 
     def collide(self, collider):
+        if self.iframes > 0:
+            return False
+
         for hit in self.hitbox:
             hit.get_pos()
             if mv_u.circle_collide(hit, collider):
                 self.health -= 1
+                self.collided_frame = True
+                self.iframes = self.defaults.iframes
                 return True
 
         return False

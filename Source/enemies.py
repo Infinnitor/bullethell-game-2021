@@ -11,6 +11,16 @@ from pygame import draw, transform, Surface
 from colour_manager import colours
 
 
+def float_range(start, end, step):
+    i = start
+    items = []
+    while i < end:
+        items.append(i)
+        i += step
+
+    return items
+
+
 class enemy(sprite):
     layer = "ENEMY"
 
@@ -106,14 +116,14 @@ class angel(enemy):
             r = range(0, 360, 90)
 
         if t == "BLARGH":
-            r = range(0, 360, 20)
+            r = range(0, 360, 15)
 
         if t == "BLARGH2":
             # r = range(11, 371, 23)
-            r = range(10, 370, 20)
+            r = float_range(7.5, 367.5, 15)
 
         if t in use_range:
-            for angle in list(r):
+            for angle in r:
                 game.add_sprite(bullets.rotate_shard((self.x, self.y), 8, speed, angle, self.c, shard_mod=1.5, collider="PLAYER"))
 
         if t == "CUSTOM":
@@ -145,7 +155,7 @@ class angel(enemy):
 
                 if self.shoot_iter % 10 == 0:
                     p = game.sprites["PLAYER"][0]
-                    game.add_sprite(bullets.prox_diamond((self.x, self.y), 15, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
+                    game.add_sprite(bullets.init_diamond((self.x, self.y), 15, 5, self.c, target=p, target_prox=300, collider="PLAYER"))
 
                 self.shoot_iter += 1
                 if self.shoot_iter > 49:

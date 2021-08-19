@@ -223,6 +223,11 @@ class prox(tracking_bullet):
         draw.circle(game.win, self.c, (self.x, self.y), self.r)
 
 
+class init_tracker(prox):
+    def update_tracking(self, game):
+        pass
+
+
 class prox_deflect(prox):
     def deflect(self, new_collider="ENEMY", new_c=colours.fullblack):
         if self.destroying is True:
@@ -255,6 +260,20 @@ class prox_diamond(prox):
         )
 
         draw.polygon(game.win, self.c, diamond)
+
+
+class init_diamond(init_tracker):
+    def update_draw(self, game):
+        diamond = (
+            (self.x, self.y - self.r*1.5),
+            (self.x - self.r*1.5, self.y),
+            (self.x, self.y + self.r*1.5),
+            (self.x + self.r*1.5, self.y),
+        )
+
+        draw.polygon(game.win, self.c, diamond)
+
+
 
 
 class prox_funi(prox):
