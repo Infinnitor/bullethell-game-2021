@@ -188,7 +188,7 @@ class polygon():
 
             rotated_p.append([math.cos(a) * hyp, math.sin(a) * hyp])
 
-        return rotated_p
+        return polygon.adjust(rotated_p, x=anchor[0], y=anchor[1])
 
 
 class morph():

@@ -77,17 +77,21 @@ class angel(enemy):
         jump_dm = [
             (0, self.r * -1),
             (0, self.r * -1),
-            (r, 0),
-            (r, 0),
+            (self.r, 0),
+            (self.r, 0),
             (0, self.r),
             (0, self.r),
-            (r * -1, 0),
-            (r * -1, 0)
+            (self.r * -1, 0),
+            (self.r * -1, 0)
         ]
+
+        # jump = mv_u.polygon.anchor(jump_dm, (0, 0))
 
         self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90), jump_dm]
         self.morph = mv_u.offset_morphpolygon(*self.polygons, offset=(0, 0), parent=self, shift=3)
         self.morph_iter = False
+
+        self.moving = False
 
         self.hitbox = [
             mv_u.offset_circle(self, (self.r//2 * -1, 0), self.r),
@@ -139,11 +143,19 @@ class angel(enemy):
             draw.polygon(self.destroy_surf, self.c, freeze_polygon)
             self.destroying = True
 
-        if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed / 2:
+        if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed:
+            self.moving = False
+            self.x = self.targetX
+            self.y = self.targetY
+        else:
+            self.moving = True
+
+        if self.moving is False:
 
             if self.shoot_tick is None:
                 self.shoot_tick = mv_u.frametick(10, game)
                 self.shoot_iter = 0
+                self.morph.init_morph(0, 10)
 
             elif self.shoot_tick.get():
                 if self.shoot_iter % 3 == 0:
@@ -154,33 +166,39 @@ class angel(enemy):
 
                 self.shoot_iter += 1
                 if self.shoot_iter > 9:
-                    self.shoot_tick = None
                     self.shoot_iter = 0
+                    self.moving = True
+
+                    # Find new target
+                    self.jump_iter += 1
+                    self.shoot_tick = None
+                    if self.jump_iter == len(self.jump_pos):
+                        self.jump_iter = 0
+
+                    self.targetX = self.jump_pos[self.jump_iter][0]
+                    self.targetY = self.jump_pos[self.jump_iter][1]
+                    self.find_slope()
 
                 self.morph_iter = not self.morph_iter
                 self.morph.init_morph(int(self.morph_iter), 10)
 
-            if self.shoot_tick is None:
-                self.jump_iter += 1
-                if self.jump_iter == len(self.jump_pos):
-                    self.jump_iter = 0
-
-                self.targetX = self.jump_pos[self.jump_iter][0]
-                self.targetY = self.jump_pos[self.jump_iter][1]
-
-                self.find_slope()
-
-        if self.shoot_tick is None:
+        else:
             self.x += self.xmove
             self.y += self.ymove
+            self.morph.init_morph(2, 15)
 
         for hit in self.hitbox:
             hit.update_pos()
 
     def update_draw(self, game):
-        polygon = self.morph.get()
-        draw.polygon(game.win, self.c, polygon)
-        # draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
+        if self.moving is True:
+            polygon = self.morph.get()
+            draw.polygon(game.win, self.c, polygon)
+
+        else:
+            polygon = self.morph.get()
+            draw.polygon(game.win, self.c, polygon)
+            # draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
 
     def update_destroy(self, game):
         self.destroy_shrink -= 2

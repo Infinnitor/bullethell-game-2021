@@ -185,9 +185,6 @@ def main_game(game):
 
         game.update_keys()
 
-        # if game.check_mouse(0, timebuffer=1):
-        #     game.add_sprite(enemies.pebble(game.mouse_pos, 15, 4, colours.white))
-
         game.update_draw()
 
         if player.destroy is True:

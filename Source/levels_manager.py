@@ -1,7 +1,9 @@
 import copy
 import move_utils as mv_u
-import enemies
 from colour_manager import colours
+
+import enemies
+import enemies_boss
 
 
 class enemy_template():
@@ -53,9 +55,11 @@ class level():
 
 
 E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
-E_angel = enemy_template(30, 7, colours.white, enemy_type=enemies.angel)
+E_angel = enemy_template(30, 20, colours.white, enemy_type=enemies.angel)
 
-fast_pebble = enemy_template(15, 10, colours.white, enemy_type=enemies.pebble)
+angel_boss = enemy_template(30, 7, colours.white, enemy_type=enemies_boss.angel)
+
+fast_pebble = enemy_template(15, 12, colours.white, enemy_type=enemies.pebble)
 
 
 level1 = (
@@ -88,13 +92,17 @@ level1 = (
     # ["PAUSE", 100],
 
     # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
-    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250)])],
+    # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250), (1000, 500)])],
     # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
-    ["PAUSE", None],
+    # ["PAUSE", None],
     #
+    ["SPAWN", angel_boss.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
+    ["PAUSE", None],
+
     # ["SPAWN", E_pebble.copy((0, 500))],
     # ["PAUSE", 50]
 )
+
 
 def init():
     global LEVEL_ONE
