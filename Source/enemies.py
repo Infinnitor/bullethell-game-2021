@@ -85,9 +85,20 @@ class angel(enemy):
             (self.r * -1, 0)
         ]
 
+        death_dm = [
+            (0, -2),
+            (0, -2),
+            (2, 0),
+            (2, 0),
+            (0, 2),
+            (0, 2),
+            (-2, 0),
+            (-2, 0),
+        ]
+
         # jump = mv_u.polygon.anchor(jump_dm, (0, 0))
 
-        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90), jump_dm]
+        self.polygons = [star, mv_u.polygon.rotate(star, (0, 0), -90), jump_dm, death_dm]
         self.morph = mv_u.offset_morphpolygon(*self.polygons, offset=(0, 0), parent=self, shift=3)
         self.morph_iter = False
 
@@ -134,13 +145,6 @@ class angel(enemy):
 
     def update_move(self, game):
         if self.health < 1:
-            self.destroy_surf = Surface((self.r * 4, self.r * 4))
-            self.destroy_surf.fill(colours.colourkey)
-            self.destroy_surf.set_colorkey(colours.colourkey)
-
-            freeze_polygon = mv_u.polygon.adjust(self.morph.get(), x=(self.x - self.r*2)*-1, y=(self.y - self.r*2)*-1)
-
-            draw.polygon(self.destroy_surf, self.c, freeze_polygon)
             self.destroying = True
 
         if math.dist((self.x, self.y), (self.targetX, self.targetY)) < self.speed:
@@ -201,14 +205,14 @@ class angel(enemy):
             # draw.circle(game.win, self.c, (self.targetX, self.targetY), self.r)
 
     def update_destroy(self, game):
-        self.destroy_shrink -= 2
-        if self.destroy_shrink < 1:
+        self.morph.init_morph(3, 45)
+
+        polygon = self.morph.get()
+        if self.morph.morphing is False:
             self.explode(game)
             self.kill()
-            return
 
-        shrunk = transform.scale(self.destroy_surf, (self.destroy_shrink, self.destroy_shrink))
-        game.win.blit(shrunk, self.center_image_pos(shrunk))
+        draw.polygon(game.win, self.c, polygon)
 
 
 class pebble(enemy):
