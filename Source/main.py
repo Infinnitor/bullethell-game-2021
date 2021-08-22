@@ -185,6 +185,7 @@ def main_game(game):
 
         game.update_keys()
 
+        game.add_text(f"Enemies: {len(game.sprites['ENEMY'])}")
         game.update_draw()
 
         if player.destroy is True:
@@ -205,7 +206,7 @@ game = game_info(
                 user_h=720,
                 bg=colours.switch(),
                 framecap=60,
-                show_framerate=False,
+                show_framerate=True,
                 quit_key=pygame.K_ESCAPE)
 
 while not main_game(game):

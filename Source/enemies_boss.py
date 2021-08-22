@@ -155,7 +155,7 @@ class angel(boss):
         if self.moving is False:
 
             if self.shoot_tick is None:
-                self.shoot_tick = mv_u.frametick(10, game)
+                self.shoot_tick = game.frametick(10)
                 self.shoot_iter = 0
                 self.morph.init_morph(0, 10)
 

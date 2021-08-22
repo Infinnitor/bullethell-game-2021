@@ -31,8 +31,7 @@ class enemy(sprite):
         return False
 
     def explode(self, game):
-        o = (self.x, self.y)
-        game.add_sprite(enemy_explosion_circle(pos=o, radius=self.r, speed=2, colour=colours.switch(), game=game))
+        game.add_sprite(enemy_explosion_circle(pos=(self.x, self.y), radius=self.r, speed=2, colour=colours.switch(), game=game))
         self.kill()
 
 
@@ -157,7 +156,7 @@ class angel(enemy):
         if self.moving is False:
 
             if self.shoot_tick is None:
-                self.shoot_tick = mv_u.frametick(10, game)
+                self.shoot_tick = game.frametick(10)
                 self.shoot_iter = 0
                 self.morph.init_morph(0, 10)
 
@@ -216,13 +215,15 @@ class angel(enemy):
 
 
 class pebble(enemy):
-    def __init__(self, pos, radius, speed, colour):
+    def __init__(self, pos, radius, speed, colour, ov_speed=None):
         self.x = pos[0]
         self.y = pos[1]
         self.start_y = pos[1]
         self.r = radius
 
         self.speed = speed
+        if ov_speed is not None:
+            self.speed = ov_speed
 
         self.c = colour
 
@@ -239,12 +240,11 @@ class pebble(enemy):
         self.start_move = False
 
         self.tick = 20
-
         self.frametick = None
 
     def update_move(self, game):
         if self.frametick is None:
-            self.frametick = mv_u.frametick(self.tick, game)
+            self.frametick = game.frametick(self.tick)
 
         if self.health < 1:
             self.destroying = True

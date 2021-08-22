@@ -49,7 +49,7 @@ class level():
                     self.iter += 1
                     return None
             else:
-                self.pause = mv_u.frametick(action, game)
+                self.pause = game.frametick(action)
 
         return None
 
@@ -58,52 +58,90 @@ E_pebble = enemy_template(15, 4, colours.white, enemy_type=enemies.pebble)
 E_angel = enemy_template(30, 20, colours.white, enemy_type=enemies.angel)
 
 angel_boss = enemy_template(30, 7, colours.white, enemy_type=enemies_boss.angel)
-
 fast_pebble = enemy_template(15, 12, colours.white, enemy_type=enemies.pebble)
 
 
 level1 = (
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 10],
-    #
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", None],
-    # ["PAUSE", 100],
-    #
-    # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
-    # ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250)])],
-    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", 10],
+
+    ["SPAWN", E_pebble.copy((0, 500))],
     ["PAUSE", None],
 
-    # ["SPAWN", angel_boss.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
-    # ["PAUSE", None],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", 15],
+    ["SPAWN", E_pebble.copy((0, 250))],
+    ["PAUSE", 10],
+    ["SPAWN", E_pebble.copy((1920, 250), ov_speed=-4)],
+    ["PAUSE", None],
+    ["PAUSE", 180],
 
-    # ["SPAWN", E_pebble.copy((0, 500))],
-    # ["PAUSE", 50]
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(1170, 250), (770, 250), (970, 250)])],
+    ["SPAWN", E_angel.copy((970, 0), jump_pos=[(770, 250), (970, 250), (1170, 250)])],
+    ["PAUSE", None],
+    ["PAUSE", 240],
+
+    ["SPAWN", angel_boss.copy((970, 0), jump_pos=[(970, 250), (1170, 250), (770, 250)])],
+    ["PAUSE", None],
+    ["PAUSE", 500000],
+
 )
+
+test1 = [
+    ["SPAWN", E_pebble.copy((0, 500))],
+    ["PAUSE", None]
+]
 
 
 def init():
-    global LEVEL_ONE
+    global LEVEL_ONE; global TESTLEVEL
     LEVEL_ONE = level(level1)
+    TESTLEVEL = level(test1)

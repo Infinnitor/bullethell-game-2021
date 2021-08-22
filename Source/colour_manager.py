@@ -91,12 +91,11 @@ class colour_list():
 
         c.switch_iter += 1
         try:
-            switch_colour = c.switch_list[c.switch_iter]
+            c.switch_list[c.switch_iter]
         except IndexError:
             c.switch_iter = 0
-            switch_colour = c.switch_list[c.switch_iter]
 
-        return switch_colour
+        return c.switch_list[c.switch_iter]
 
 
 colours = colour_list()

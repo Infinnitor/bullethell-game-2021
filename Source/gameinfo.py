@@ -10,6 +10,7 @@ import time
 import random
 import copy
 import pygame
+pygame.font.init()
 
 
 class game_info():
@@ -48,11 +49,19 @@ class game_info():
         self.show_framerate = show_framerate
 
         self.start_time = time.time()
+        self.last_frame_time = time.time()
+        self.delta_time = 1
+
         self.quit_key = quit_key
 
         self.shake_x = 0
         self.shake_y = 0
         self.shake = False
+
+        self.font_name = None
+        self.font_size = self.win_w // 50
+        self.FONT = pygame.font.Font(self.font_name, self.font_size)
+        self.render_text = []
 
         self.particles = []
         self.sprites = {
@@ -65,57 +74,14 @@ class game_info():
 
         self.load_levels()
 
-    class particle(sprite):
-        def __init__(part, pos, size, angle, speed, lifetime, colour, shape="CIRCLE", sprite=None):
-            part.x = pos[0]
-            part.y = pos[1]
-            if not sprite:
-                part.size = size
-                part.sprite_bool = False
-
-                part.shape = shape
-
-            else:
-                part.sprite = sprite
-                part.sprite_bool = True
-
-            part.speed = speed
-            part.angle = angle
-
-            part.lifetime = lifetime
-            part.life = 0
-            part.lifeloss = size / lifetime
-
-            part.xmove = math.cos(math.radians(part.angle)) * speed
-            part.ymove = math.sin(math.radians(part.angle)) * speed
-
-            part.colour = colour
-            part.destroy = False
-
-        def update_move(part, game):
-            part.x += part.xmove
-            part.y += part.ymove
-
-            part.size -= part.lifeloss
-
-            part.life += 1
-            if part.life > part.lifetime:
-                part.destroy = True
-
-        def update_draw(part, game):
-            if not part.sprite_bool:
-                if part.shape == "CIRCLE":
-                    pygame.draw.circle(game.win, part.colour, (part.x, part.y), part.size)
-
-                elif part.shape == "SQUARE":
-                    pygame.draw.rect(game.win, part.colour, (part.x, part.y, part.size, part.size))
-
-                else:
-                    raise AttributeError(f"{part.shape} is not a valid shape for a particle")
+    def add_text(self, string, c=(255, 255, 255)):
+        text_img = self.FONT.render(str(string), False, c)
+        self.render_text.append(text_img)
 
     def load_levels(self):
         levels_manager.init()
         self.level = levels_manager.LEVEL_ONE
+        # self.level = levels_manager.TESTLEVEL
 
     # Function that converts an orientation into actual numbers
     def orientate(self, h=False, v=False):
@@ -152,6 +118,27 @@ class game_info():
             return v_dict[v]
 
         return False # Safety Clause
+
+    class frametick_class():
+        def __init__(self, tick, game):
+            self.game = game
+
+            self.start_frame = game.frames
+            self.frame = 0
+            self.tick = tick
+
+        def get(self):
+            self.frame = self.game.frames - self.start_frame
+
+            if self.frame > self.tick:
+                self.start_frame = self.game.frames
+                self.frame = 0
+                return True
+
+            return False
+
+    def frametick(self, tick):
+        return self.frametick_class(tick, self)
 
     def playsound(self, name):
 
@@ -249,18 +236,6 @@ class game_info():
         else:
             self.shake = False
 
-    def update_particles(self):
-        if len(self.particles):
-            p_survive = []
-            for p in self.particles:
-                if p.destroy:
-                    continue
-                p.update_move()
-                p.update_draw(self)
-                p_survive.append(p)
-
-            self.particles = p_survive
-
     def update_keys(self):
         self.last_keys = self.keys
         self.last_mouse = self.mouse
@@ -307,6 +282,11 @@ class game_info():
                 else:
                     s_draw.update_draw(self)
 
+        for y, f in enumerate(self.render_text):
+            y_pos = (y * self.font_size) + (self.font_size * 2)
+            self.win.blit(f, (self.font_size * 2, y_pos))
+        self.render_text = []
+
         self.update_screenshake()
 
     # Function for scaling the design screen to the target screen
@@ -332,11 +312,17 @@ class game_info():
     def update_state(self):
 
         self.frames += 1
+
+        self.delta_time = time.time() - self.last_frame_time
+
+        self.last_frame_time = time.time()
         self.elapsed_time = time.time() - self.start_time
 
-        self.framerate = self.frames / self.elapsed_time
+        self.framerate = 1 / self.delta_time
+
         if self.show_framerate:
             print(self.framerate, end="\r")
+            self.add_text(self.framerate, (255, 255, 255))
 
         if not self.quit_key == None:
             if self.check_key(self.quit_key):
